@@ -1,0 +1,6 @@
+{
+  "name": "SMA Negeri 1 Julok - Website Resmi",
+  "description": "Website resmi SMA Negeri 1 Julok, Buket Seuraja, Kec. Julok, Kab. Aceh Timur, Aceh. Portal profil sekolah, SPMB, berita, guru, kurikulum, dan layanan digital.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
