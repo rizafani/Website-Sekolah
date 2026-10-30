@@ -1,0 +1,127 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role and contact information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "phone": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "email", "role"]
+    },
+    "EditorialArticle": {
+      "title": "EditorialArticle",
+      "description": "Article in the editorial pipeline",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "content": { "type": "string" },
+        "category": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "status": { "type": "string" },
+        "publishedAt": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "content", "status"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "School announcement item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string" },
+        "targetAudience": { "type": "string" },
+        "isUrgent": { "type": "boolean" }
+      },
+      "required": ["id", "title", "content"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "School agenda and calendar event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "location": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "date"]
+    },
+    "SpmbRegistration": {
+      "title": "SpmbRegistration",
+      "description": "Student admission application",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "regNumber": { "type": "string" },
+        "fullName": { "type": "string" },
+        "nisn": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "prevSchool": { "type": "string" },
+        "chosenMajor": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "regNumber", "fullName", "nisn"]
+    },
+    "SchoolSettings": {
+      "title": "SchoolSettings",
+      "description": "School portal identity and settings",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "npsn": { "type": "string" },
+        "headmaster": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" }
+      },
+      "required": ["name", "npsn", "headmaster"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and RBAC role assignment"
+    },
+    "/articles/{articleId}": {
+      "schema": "EditorialArticle",
+      "description": "Editorial workflow news and articles"
+    },
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "School announcements"
+    },
+    "/events/{eventId}": {
+      "schema": "Event",
+      "description": "School calendar and events"
+    },
+    "/spmbRegistrations/{registrationId}": {
+      "schema": "SpmbRegistration",
+      "description": "SPMB admissions and applications"
+    },
+    "/settings/school": {
+      "schema": "SchoolSettings",
+      "description": "General school configuration"
+    }
+  }
+}

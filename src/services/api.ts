@@ -372,6 +372,10 @@ export const api = {
     return data;
   },
 
+  async createDraftArticle(article: Partial<EditorialArticle>): Promise<EditorialArticle> {
+    return this.createEditorialDraft(article);
+  },
+
   async submitArticleForReview(id: string): Promise<EditorialArticle> {
     const res = await fetch(`/api/editorial/articles/${id}/submit`, {
       method: 'POST',

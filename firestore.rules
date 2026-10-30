@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == 'p3a.hiduptani@gmail.com' && request.auth.token.email_verified == true) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if isValidId(userId) && isAdmin();
+    }
+
+    // Articles collection (Editorial workflow)
+    match /articles/{articleId} {
+      allow get: if isValidId(articleId) && (
+        resource.data.status == 'published' ||
+        isAdmin() ||
+        (isSignedIn() && resource.data.authorId == request.auth.uid)
+      );
+      allow list: if resource.data.status == 'published' || isAdmin();
+      allow create: if isValidId(articleId) && isSignedIn() && incoming().authorId == request.auth.uid;
+      allow update: if isValidId(articleId) && (
+        isAdmin() ||
+        (isSignedIn() && existing().authorId == request.auth.uid && incoming().authorId == existing().authorId)
+      );
+      allow delete: if isValidId(articleId) && isAdmin();
+    }
+
+    // Announcements collection
+    match /announcements/{announcementId} {
+      allow read: if isValidId(announcementId);
+      allow write: if isValidId(announcementId) && isAdmin();
+    }
+
+    // Events collection
+    match /events/{eventId} {
+      allow read: if isValidId(eventId);
+      allow write: if isValidId(eventId) && isAdmin();
+    }
+
+    // SPMB Registrations collection
+    match /spmbRegistrations/{regId} {
+      allow get: if isValidId(regId) && (isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid));
+      allow list: if isAdmin();
+      allow create: if isValidId(regId) && incoming().size() > 0;
+      allow update, delete: if isValidId(regId) && isAdmin();
+    }
+
+    // School Settings
+    match /settings/{settingId} {
+      allow read: if isValidId(settingId);
+      allow write: if isValidId(settingId) && isAdmin();
+    }
+  }
+}
