@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -9,7 +9,10 @@ import {
   Tag, 
   Bookmark, 
   BookmarkCheck,
-  Printer
+  Printer,
+  Globe,
+  Copy,
+  Sparkles
 } from 'lucide-react';
 import { NewsItem } from '../types/index.ts';
 import { Breadcrumbs } from '../components/Breadcrumbs.tsx';
@@ -32,12 +35,23 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({
     return localStorage.getItem(`bookmark_news_${newsItem.id}`) === 'true';
   });
 
+  const articleFullUrl = `${window.location.origin}${window.location.pathname}#/berita/${newsItem.slug || newsItem.id}`;
+
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = `${newsItem.title} - SMA Negeri 1 Julok`;
+    window.location.hash = `#/berita/${newsItem.slug || newsItem.id}`;
+    return () => {
+      document.title = prevTitle;
+    };
+  }, [newsItem.title, newsItem.slug, newsItem.id]);
+
   const related = allNews
     .filter(n => n.id !== newsItem.id && n.category === newsItem.category)
     .slice(0, 3);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(articleFullUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -121,6 +135,27 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({
         <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
           {newsItem.title}
         </h1>
+
+        {/* Dedicated Article Permanent URL Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-sky-50/90 border border-sky-200 text-xs shadow-2xs">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="px-2 py-0.5 rounded bg-sky-800 text-white font-bold text-[10px] shrink-0 uppercase tracking-wider flex items-center gap-1">
+              <Globe className="w-3 h-3" />
+              URL Resmi Artikel
+            </span>
+            <span className="font-mono text-sky-950 font-medium truncate text-[11px] select-all">
+              {articleFullUrl}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleCopyLink}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-sky-300 text-sky-900 font-bold hover:bg-sky-100 text-[11px] cursor-pointer shadow-2xs shrink-0 self-start sm:self-auto"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-sky-700" />}
+            <span>{copied ? 'URL Disalin!' : 'Salin URL Artikel'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Hero Image */}
@@ -133,14 +168,46 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({
         />
       </div>
 
-      {/* Main Body */}
+      {/* Main Body with Inline Image Support */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6">
         <div className="prose prose-slate max-w-none text-sm sm:text-base leading-relaxed text-slate-700 space-y-4">
-          {newsItem.content.split('\n\n').map((paragraph, idx) => (
-            <p key={idx} className={idx === 0 ? "text-base sm:text-lg font-medium text-slate-800 leading-relaxed" : ""}>
-              {paragraph}
-            </p>
-          ))}
+          {newsItem.content.split('\n\n').map((paragraph, idx) => {
+            // Check if paragraph is markdown image ![alt](url)
+            const imgMatch = paragraph.match(/^!\[(.*?)\]\((.*?)\)$/);
+            if (imgMatch) {
+              const altText = imgMatch[1];
+              const imgSrc = imgMatch[2];
+              return (
+                <figure key={idx} className="my-6 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                  <img
+                    src={imgSrc}
+                    alt={altText}
+                    className="w-full max-h-96 object-cover"
+                  />
+                  {altText && (
+                    <figcaption className="p-2.5 text-center text-xs text-slate-500 italic bg-white border-t border-slate-100">
+                      {altText}
+                    </figcaption>
+                  )}
+                </figure>
+              );
+            }
+
+            // Check if heading ##
+            if (paragraph.startsWith('## ')) {
+              return (
+                <h2 key={idx} className="text-xl sm:text-2xl font-bold text-slate-900 pt-3">
+                  {paragraph.replace(/^## /, '')}
+                </h2>
+              );
+            }
+
+            return (
+              <p key={idx} className={idx === 0 ? "text-base sm:text-lg font-medium text-slate-800 leading-relaxed" : ""}>
+                {paragraph}
+              </p>
+            );
+          })}
         </div>
 
         {/* Tags */}
@@ -174,7 +241,7 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({
               <span>{copied ? 'Tautan Disalin!' : 'Salin Tautan'}</span>
             </button>
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(newsItem.title)}&url=${encodeURIComponent(window.location.href)}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(newsItem.title)}&url=${encodeURIComponent(articleFullUrl)}`}
               target="_blank"
               rel="noreferrer"
               className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-1"
@@ -182,7 +249,7 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({
               X / Twitter
             </a>
             <a
-              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(newsItem.title + ' - ' + window.location.href)}`}
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(newsItem.title + ' - ' + articleFullUrl)}`}
               target="_blank"
               rel="noreferrer"
               className="text-xs font-medium px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1"
@@ -190,7 +257,7 @@ export const NewsDetailView: React.FC<NewsDetailViewProps> = ({
               WhatsApp
             </a>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleFullUrl)}`}
               target="_blank"
               rel="noreferrer"
               className="text-xs font-medium px-3 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-800 text-white flex items-center gap-1"

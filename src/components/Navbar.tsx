@@ -35,6 +35,7 @@ interface NavbarProps {
   onOpenDashboard: () => void;
   unreadNotificationsCount?: number;
   onOpenNotifications?: () => void;
+  onOpenGoogleSitelinks?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -48,7 +49,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   onOpenDashboard,
   unreadNotificationsCount = 0,
-  onOpenNotifications
+  onOpenNotifications,
+  onOpenGoogleSitelinks
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -108,6 +110,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 text-xs font-medium">
+            {onOpenGoogleSitelinks && (
+              <button
+                onClick={onOpenGoogleSitelinks}
+                className="text-sky-300 hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer bg-slate-800/90 hover:bg-slate-700 px-2 py-0.5 rounded border border-slate-700/60 shadow-xs"
+                title="Lihat Pratinjau Google Search & Sitelinks Resmi"
+              >
+                <Search className="w-3 h-3 text-emerald-400" />
+                <span className="font-semibold">Google Sitelinks</span>
+              </button>
+            )}
+
             <button
               onClick={() => handleLinkClick('layanan-digital')}
               className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-1.5 cursor-pointer"

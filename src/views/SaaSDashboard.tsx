@@ -69,6 +69,9 @@ import {
   GalleryItem
 } from '../types/index.ts';
 import { api } from '../services/api.ts';
+import { ImageUploader } from '../components/ImageUploader.tsx';
+import { RichArticleEditorModal } from '../components/RichArticleEditorModal.tsx';
+import { GoogleSearchSitelinksModal } from '../components/GoogleSearchSitelinksModal.tsx';
 
 export type DashboardMenuId =
   | 'ringkasan'
@@ -281,6 +284,7 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
   const [articleSearch, setArticleSearch] = useState('');
   const [isArticleModalOpen, setIsArticleModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<EditorialArticle | null>(null);
+  const [isGoogleSitelinksModalOpen, setIsGoogleSitelinksModalOpen] = useState(false);
   const [articleFormData, setArticleFormData] = useState({
     title: '',
     category: 'Kegiatan' as EditorialArticle['category'],
@@ -1569,6 +1573,18 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
 
             {/* Quick Context Action Button depending on current activeTab */}
             <div className="flex items-center gap-2">
+              {activeTab === 'berita' && (
+                <button
+                  type="button"
+                  onClick={() => setIsGoogleSitelinksModalOpen(true)}
+                  className="px-3 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                  title="Lihat Pratinjau Tampilan Website di Google dengan Sitelinks"
+                >
+                  <Search className="w-3.5 h-3.5 text-[#4285F4]" />
+                  <span className="hidden sm:inline">Pratinjau Google Sitelinks</span>
+                </button>
+              )}
+
               {activeTab === 'berita' && userPermissions.includes('content.create') && (
                 <button
                   onClick={() => {
@@ -1587,7 +1603,7 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
                   className="px-3.5 py-2 text-xs font-bold text-white bg-sky-800 hover:bg-sky-700 rounded-lg shadow-sm flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Tambah Artikel</span>
+                  <span>Editor Artikel Lengkap</span>
                 </button>
               )}
 
@@ -2219,9 +2235,14 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
                     ) : (
                       paginatedArticles.map((art) => (
                         <tr key={art.id} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="px-4 py-3 font-medium text-slate-900 max-w-xs truncate">
+                          <td className="px-4 py-3 font-medium text-slate-900 max-w-xs">
                             <span className="font-semibold text-slate-900 block truncate">{art.title}</span>
-                            <span className="text-[11px] text-slate-500 truncate block">{art.excerpt}</span>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[10px] text-sky-800 bg-sky-50 px-1.5 py-0.5 rounded font-mono truncate max-w-[220px] border border-sky-100">
+                                #/berita/{art.slug || art.id}
+                              </span>
+                              <span className="text-[11px] text-slate-500 truncate block">{art.excerpt}</span>
+                            </div>
                           </td>
                           <td className="px-4 py-3">
                             <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-sky-50 text-sky-800 border border-sky-100">
@@ -2252,7 +2273,33 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
                             {art.createdAt ? art.createdAt.split('T')[0] : 'Hari ini'}
                           </td>
                           <td className="px-4 py-3 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
+                            <div className="flex items-center justify-end gap-1">
+                              {/* Open Direct Article URL */}
+                              {art.status === 'published' && (
+                                <a
+                                  href={`#/berita/${art.slug || art.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="p-1.5 rounded-md text-emerald-700 hover:text-emerald-900 hover:bg-emerald-50 cursor-pointer"
+                                  title="Buka URL Langsung Artikel di Tab Baru"
+                                >
+                                  <ExternalLink className="w-4 h-4" />
+                                </a>
+                              )}
+
+                              {/* Copy Article Permalink */}
+                              <button
+                                onClick={() => {
+                                  const url = `${window.location.origin}${window.location.pathname}#/berita/${art.slug || art.id}`;
+                                  navigator.clipboard.writeText(url);
+                                  showToast('URL resmi artikel berhasil disalin!');
+                                }}
+                                className="p-1.5 rounded-md text-slate-500 hover:text-sky-700 hover:bg-sky-50 cursor-pointer"
+                                title="Salin URL Resmi Artikel"
+                              >
+                                <Copy className="w-4 h-4" />
+                              </button>
+
                               {/* Preview Button */}
                               <button
                                 onClick={() =>
@@ -2301,19 +2348,10 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
                                 <button
                                   onClick={() => {
                                     setEditingArticle(art);
-                                    setArticleFormData({
-                                      title: art.title,
-                                      category: art.category,
-                                      excerpt: art.excerpt,
-                                      content: art.content,
-                                      imageUrl: art.imageUrl || '/src/assets/images/hero_sman1julok_1793290495969.jpg',
-                                      status: art.status,
-                                      tags: (art.tags || []).join(', ')
-                                    });
                                     setIsArticleModalOpen(true);
                                   }}
                                   className="p-1.5 rounded-md text-slate-500 hover:text-sky-700 hover:bg-sky-50 cursor-pointer"
-                                  title="Edit Artikel"
+                                  title="Buka Editor Artikel Lengkap"
                                 >
                                   <Edit3 className="w-4 h-4" />
                                 </button>
@@ -2726,25 +2764,15 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
                         className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500"
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Foto Kepala Sekolah (URL / Jalur Gambar)</label>
-                      <div className="flex items-center gap-3">
-                        {schoolSettings.principalPhoto && (
-                          <img
-                            src={schoolSettings.principalPhoto}
-                            alt="Foto Kepala Sekolah"
-                            className="w-10 h-12 object-cover rounded border border-slate-200 shadow-2xs"
-                            onError={(e) => (e.currentTarget.style.display = 'none')}
-                          />
-                        )}
-                        <input
-                          type="text"
-                          value={schoolSettings.principalPhoto || ''}
-                          onChange={(e) => setSchoolSettings({ ...schoolSettings, principalPhoto: e.target.value })}
-                          placeholder="/src/assets/images/headmaster_sman1julok_1793290495217.jpg"
-                          className="flex-1 px-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500"
-                        />
-                      </div>
+                    <div className="md:col-span-2">
+                      <ImageUploader
+                        label="Unggah Foto Resmi Kepala Sekolah (Pilih Berkas / Seret Foto)"
+                        currentImageUrl={schoolSettings.principalPhoto}
+                        onImageUploaded={(url) => setSchoolSettings({ ...schoolSettings, principalPhoto: url })}
+                        aspectRatio="portrait"
+                        placeholderText="Pilih atau seret berkas foto Kepala Sekolah ke sini"
+                        helperText="Format JPG, PNG, atau WebP (Maks. 5 MB). Foto otomatis diunggah dan disimpan ke profil."
+                      />
                     </div>
                   </div>
                   <div>
@@ -4165,110 +4193,59 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
       {/* 3. MODALS FOR CRUD OPERATIONS                        */}
       {/* ---------------------------------------------------- */}
 
-      {/* Article Create/Edit Modal */}
-      {isArticleModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="bg-white rounded-xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto animate-in zoom-in-95">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <h3 className="font-bold text-base text-slate-900">
-                {editingArticle ? 'Edit Berita / Artikel' : 'Tulis Berita / Artikel Baru'}
-              </h3>
-              <button
-                onClick={() => setIsArticleModalOpen(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded-md cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* Rich Article Editor Modal with Image Upload, Word Counter & Dedicated Permalink */}
+      <RichArticleEditorModal
+        isOpen={isArticleModalOpen}
+        onClose={() => {
+          setIsArticleModalOpen(false);
+          setEditingArticle(null);
+        }}
+        article={editingArticle}
+        userPermissions={userPermissions}
+        currentUserRole={currentUser.role}
+        onSave={async (articleData) => {
+          try {
+            if (editingArticle) {
+              const updated = await api.updateEditorialArticle(editingArticle.id, articleData);
+              setArticlesList((prev) =>
+                prev.map((a) => (a.id === editingArticle.id ? { ...a, ...updated } : a))
+              );
+              showToast('Artikel berhasil diperbarui!');
+              api.fetchAllData().then((d) => onRefresh(d)).catch(() => {});
+              return updated;
+            } else {
+              const newArt = await api.createEditorialDraft(articleData);
+              setArticlesList((prev) => [newArt, ...prev]);
+              showToast(
+                newArt.status === 'published'
+                  ? 'Artikel resmi diterbitkan ke website!'
+                  : 'Draf artikel baru berhasil disimpan!'
+              );
+              api.fetchAllData().then((d) => onRefresh(d)).catch(() => {});
+              return newArt;
+            }
+          } catch (err: any) {
+            showToast(err.message || 'Gagal menyimpan artikel.', 'error');
+            throw err;
+          }
+        }}
+      />
 
-            <form onSubmit={handleSaveArticle} className="space-y-4 pt-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Judul Artikel</label>
-                <input
-                  type="text"
-                  required
-                  value={articleFormData.title}
-                  onChange={(e) => setArticleFormData({ ...articleFormData, title: e.target.value })}
-                  placeholder="Contoh: Siswa SMAN 1 Julok Raih Medali Emas OSN Tingkat Provinsi"
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Kategori</label>
-                  <select
-                    value={articleFormData.category}
-                    onChange={(e) => setArticleFormData({ ...articleFormData, category: e.target.value as any })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
-                  >
-                    <option value="Kegiatan">Kegiatan</option>
-                    <option value="Prestasi">Prestasi</option>
-                    <option value="Akademik">Akademik</option>
-                    <option value="Pengumuman">Pengumuman</option>
-                    <option value="Artikel Siswa">Artikel Siswa</option>
-                    <option value="Budaya & Agama">Budaya & Agama</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Status Publikasi</label>
-                  <select
-                    value={articleFormData.status}
-                    onChange={(e) => setArticleFormData({ ...articleFormData, status: e.target.value as any })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
-                  >
-                    <option value="draft">Draf (Editor)</option>
-                    <option value="pending_approval">Menunggu Persetujuan</option>
-                    {userPermissions.includes('content.approve') && <option value="approved">Disetujui</option>}
-                    <option value="scheduled">Terjadwal (Publikasi Otomatis)</option>
-                    {userPermissions.includes('content.publish') && <option value="published">Diterbitkan (Live di Website)</option>}
-                    <option value="archived">Diarsipkan</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Ringkasan Singkat (Excerpt)</label>
-                <textarea
-                  rows={2}
-                  value={articleFormData.excerpt}
-                  onChange={(e) => setArticleFormData({ ...articleFormData, excerpt: e.target.value })}
-                  placeholder="Ringkasan 1-2 kalimat untuk pratinjau berita..."
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Konten Lengkap</label>
-                <textarea
-                  rows={6}
-                  required
-                  value={articleFormData.content}
-                  onChange={(e) => setArticleFormData({ ...articleFormData, content: e.target.value })}
-                  placeholder="Tuliskan berita lengkap di sini..."
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 font-sans"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setIsArticleModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-lg border border-slate-200 cursor-pointer"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-sky-800 hover:bg-sky-700 rounded-lg shadow-sm cursor-pointer"
-                >
-                  Simpan Artikel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Google Search Sitelinks Modal Simulator */}
+      <GoogleSearchSitelinksModal
+        isOpen={isGoogleSitelinksModalOpen}
+        onClose={() => setIsGoogleSitelinksModalOpen(false)}
+        settings={schoolSettings}
+        onNavigate={(view, param) => {
+          if (view === 'beranda') {
+            window.location.hash = '#/beranda';
+          } else if (param) {
+            window.location.hash = `#/${view}/${param}`;
+          } else {
+            window.location.hash = `#/${view}`;
+          }
+        }}
+      />
 
       {/* Custom Page Modal */}
       {isPageModalOpen && (

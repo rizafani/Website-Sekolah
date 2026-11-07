@@ -1170,6 +1170,40 @@ export const api = {
     return data;
   },
 
+  async uploadFile(file: File, title?: string): Promise<{ url: string; file: any }> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64Data = reader.result as string;
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+              filename: file.name,
+              mimeType: file.type || 'image/jpeg',
+              fileSize: file.size,
+              title: title || file.name,
+              base64Data
+            })
+          });
+          const data = await res.json();
+          if (res.ok && (data.url || data.file?.url)) {
+            resolve({ url: data.url || data.file?.url, file: data.file });
+            return;
+          }
+          // Server error fallback to data URL
+          resolve({ url: base64Data, file: { id: `med-${Date.now()}`, url: base64Data, title: file.name } });
+        } catch {
+          // Offline / network fallback to data URL
+          resolve({ url: base64Data, file: { id: `med-${Date.now()}`, url: base64Data, title: file.name } });
+        }
+      };
+      reader.onerror = () => reject(new Error('Gagal membaca berkas gambar.'));
+      reader.readAsDataURL(file);
+    });
+  },
+
   async deleteMedia(id: string): Promise<boolean> {
     const res = await fetch(`/api/media/${id}`, {
       method: 'DELETE',

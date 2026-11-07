@@ -3,13 +3,13 @@
     "name": "SMA Negeri 1 Julok",
     "shortName": "SMAN 1 Julok",
     "tagline": "Unggul dalam Prestasi, Berkarakter Islami, Berwawasan Global",
-    "npsn": "10102148",
+    "npsn": "10101877",
     "status": "Negeri",
     "accreditation": "A (Unggul)",
     "curriculum": "Kurikulum Merdeka Mandiri Berbagi",
-    "principalName": "Drs. T. Muhammad Yusuf, M.Pd.",
+    "principalName": "Faisal, S.Pd., M.Pd.",
     "principalNip": "19680512 199403 1 004",
-    "principalPhoto": "/src/assets/images/headmaster_sman1julok_1793290495217.jpg",
+    "principalPhoto": "/uploads/upload_1794076668029_foto_kepala_sekolah_sukses.png",
     "principalSpeech": "Selamat datang di website resmi SMA Negeri 1 Julok.",
     "address": "Jl. Lintas Medan - Banda Aceh Km. 362, Desa Buket Seuraja",
     "village": "Buket Seuraja",
@@ -38,6 +38,24 @@
     }
   },
   "news": [
+    {
+      "id": "art-1794076654884",
+      "title": "Peluncuran Laboratorium Riset Digital SMA Negeri 1 Julok",
+      "slug": "peluncuran-laboratorium-riset-digital-sma-negeri-1-julok",
+      "excerpt": "Peluncuran Laboratorium Riset Digital SMA Negeri 1 Julok",
+      "content": "## Inovasi Pembelajaran Abad 21\n\nSMA Negeri 1 Julok meresmikan laboratorium sains dan teknologi terkini.\n\n![Foto Lab](/uploads/foto_kepala_sekolah_sukses.png)\n\nFasilitas ini memfasilitasi riset mandiri para siswa.",
+      "category": "Prestasi",
+      "author": "Administrator Sistem Utama",
+      "date": "2026-11-07",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "tags": [
+        "digital",
+        "laboratorium",
+        "prestasi"
+      ],
+      "views": 0,
+      "isFeatured": false
+    },
     {
       "id": "art-1794022585308",
       "title": "Ujian Asesmen Bakat Minat Siswa Kelas XII",
@@ -988,7 +1006,7 @@
       "failedLoginAttempts": 0,
       "createdAt": "2026-01-01T08:00:00Z",
       "phone": "081269001100",
-      "lastLogin": "2026-11-07T03:36:25.277Z"
+      "lastLogin": "2026-11-07T18:37:55.054Z"
     },
     {
       "id": "usr-adminsekolah",
@@ -1005,7 +1023,7 @@
       "createdAt": "2026-01-05T09:00:00Z",
       "nip": "19680512 199403 1 004",
       "phone": "081269001122",
-      "lastLogin": "2026-11-07T03:34:55.868Z"
+      "lastLogin": "2026-11-07T18:26:09.716Z"
     },
     {
       "id": "usr-editor",
@@ -1168,6 +1186,27 @@
     }
   ],
   "articles": [
+    {
+      "id": "art-1794076654884",
+      "title": "Peluncuran Laboratorium Riset Digital SMA Negeri 1 Julok",
+      "slug": "peluncuran-laboratorium-riset-digital-sma-negeri-1-julok",
+      "excerpt": "Peluncuran Laboratorium Riset Digital SMA Negeri 1 Julok",
+      "content": "## Inovasi Pembelajaran Abad 21\n\nSMA Negeri 1 Julok meresmikan laboratorium sains dan teknologi terkini.\n\n![Foto Lab](/uploads/foto_kepala_sekolah_sukses.png)\n\nFasilitas ini memfasilitasi riset mandiri para siswa.",
+      "category": "Prestasi",
+      "authorId": "usr-superadmin",
+      "authorName": "Administrator Sistem Utama",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "status": "published",
+      "createdAt": "2026-11-07T18:37:34.884Z",
+      "updatedAt": "2026-11-07T18:37:34.884Z",
+      "publishedAt": "2026-11-07T18:37:34.884Z",
+      "tags": [
+        "digital",
+        "laboratorium",
+        "prestasi"
+      ],
+      "views": 0
+    },
     {
       "id": "art-1794022585308",
       "title": "Ujian Asesmen Bakat Minat Siswa Kelas XII",
@@ -1386,6 +1425,174 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1794076675072-wad7",
+      "timestamp": "2026-11-07T18:37:55.072Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "SETTINGS_UPDATED",
+      "resource": "SETTINGS",
+      "details": "Memperbarui informasi dan pengaturan sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076675055-r78q",
+      "timestamp": "2026-11-07T18:37:55.055Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076668029-mv9s",
+      "timestamp": "2026-11-07T18:37:48.029Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "FILE_UPLOADED",
+      "resource": "MEDIA",
+      "details": "Berkas terverifikasi diunggah: upload_1794076668029_foto_kepala_sekolah_sukses.png (image/png)",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076668011-x884",
+      "timestamp": "2026-11-07T18:37:48.011Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076660088-tgf8",
+      "timestamp": "2026-11-07T18:37:40.089Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076654885-pyuj",
+      "timestamp": "2026-11-07T18:37:34.885Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "ARTICLE_CREATED",
+      "resource": "EDITORIAL",
+      "details": "Membuat artikel: 'Peluncuran Laboratorium Riset Digital SMA Negeri 1 Julok' [Status: published].",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076654864-8exh",
+      "timestamp": "2026-11-07T18:37:34.864Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076605225-8xst",
+      "timestamp": "2026-11-07T18:36:45.225Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794076598691-rcpb",
+      "timestamp": "2026-11-07T18:36:38.691Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794075969717-hpfn",
+      "timestamp": "2026-11-07T18:26:09.717Z",
+      "userId": "usr-adminsekolah",
+      "username": "admin.sekolah",
+      "userRole": "admin_sekolah",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role admin_sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794075961619-8552",
+      "timestamp": "2026-11-07T18:26:01.620Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGOUT",
+      "resource": "AUTH",
+      "details": "Sesi diakhiri secara manual oleh pengguna.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794075948464-bb0i",
+      "timestamp": "2026-11-07T18:25:48.464Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "SETTINGS_UPDATED",
+      "resource": "SETTINGS",
+      "details": "Memperbarui informasi dan pengaturan sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794075905044-1ykq",
+      "timestamp": "2026-11-07T18:25:05.044Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794075828844-apm1",
+      "timestamp": "2026-11-07T18:23:48.844Z",
+      "userId": "usr-adminsekolah",
+      "username": "admin.sekolah",
+      "userRole": "admin_sekolah",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role admin_sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
     {
       "id": "log-1794022585309-ob2n",
       "timestamp": "2026-11-07T03:36:25.309Z",
@@ -1750,6 +1957,15 @@
     }
   ],
   "media": [
+    {
+      "id": "med-1794076668029",
+      "title": "Foto Kepala Sekolah Berhasil Diunggah",
+      "url": "/uploads/upload_1794076668029_foto_kepala_sekolah_sukses.png",
+      "fileType": "image",
+      "fileSize": "0.0 MB",
+      "uploadedAt": "2026-11-07",
+      "uploadedBy": "Administrator Sistem Utama"
+    },
     {
       "id": "med-1",
       "title": "Foto Kampus Depan SMAN 1 Julok",

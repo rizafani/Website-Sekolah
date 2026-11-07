@@ -21,6 +21,7 @@ import { LoginModal } from './components/LoginModal.tsx';
 import { ResetPasswordModal } from './components/ResetPasswordModal.tsx';
 import { SuperAdminProvisionModal } from './components/SuperAdminProvisionModal.tsx';
 import { NotificationModal } from './components/NotificationModal.tsx';
+import { GoogleSearchSitelinksModal } from './components/GoogleSearchSitelinksModal.tsx';
 import { ScrollToTop } from './components/ScrollToTop.tsx';
 
 // Public Views
@@ -77,6 +78,7 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDigitalServicesOpen, setIsDigitalServicesOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isGoogleSitelinksOpen, setIsGoogleSitelinksOpen] = useState(false);
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
   // Dynamic CMS Page view slug
@@ -104,6 +106,12 @@ export default function App() {
     const mainRoute = segments[0] || 'beranda';
     const subRoute = segments[1] || '';
 
+    if (mainRoute === 'google-search' || mainRoute === 'pencarian-google' || mainRoute === 'sitelinks') {
+      setIsGoogleSitelinksOpen(true);
+      setCurrentView('beranda');
+      return;
+    }
+
     if (mainRoute === 'dashboard') {
       setCurrentView('dashboard');
       if (subRoute) {
@@ -112,7 +120,8 @@ export default function App() {
       return;
     }
 
-    if (mainRoute === 'berita-detail' && subRoute) {
+    // Direct unique URL for published articles: #/berita/:slug or #/artikel/:slug or #/berita-detail/:id
+    if ((mainRoute === 'berita-detail' || mainRoute === 'berita' || mainRoute === 'artikel') && subRoute) {
       setSelectedNewsId(subRoute);
       api.recordNewsView(subRoute);
       setCurrentView('berita-detail');
@@ -210,13 +219,22 @@ export default function App() {
   }, []);
 
   const handleNavigate = (view: string, param?: string) => {
-    if (view === 'berita-detail' && param) {
-      setSelectedNewsId(param);
-      api.recordNewsView(param);
-      window.location.hash = `#/berita-detail/${param}`;
+    if ((view === 'berita-detail' || view === 'berita') && param) {
+      const item = data.news.find((n) => n.id === param || n.slug === param) ||
+        data.articles?.find((a) => a.id === param || a.slug === param);
+      const targetSlug = item?.slug || param;
+      setSelectedNewsId(targetSlug);
+      api.recordNewsView(targetSlug);
+      window.location.hash = `#/berita/${targetSlug}`;
+      setCurrentView('berita-detail');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     } else if (view === 'halaman-kustom' && param) {
       setSelectedPageSlug(param);
       window.location.hash = `#/halaman/${param}`;
+    } else if (view === 'google-search' || view === 'sitelinks') {
+      setIsGoogleSitelinksOpen(true);
+      return;
     } else if (view === 'dashboard') {
       const tab = (param as DashboardMenuId) || dashboardTab || 'ringkasan';
       setDashboardTab(tab);
@@ -440,7 +458,10 @@ export default function App() {
           />
         );
       case 'berita-detail': {
-        const found = data.news.find((n) => n.id === selectedNewsId) || data.news[0];
+        const found = 
+          data.news.find((n) => n.id === selectedNewsId || n.slug === selectedNewsId) ||
+          data.articles?.find((a) => a.id === selectedNewsId || a.slug === selectedNewsId) as unknown as NewsItem ||
+          data.news[0];
         return (
           <NewsDetailView
             newsItem={found}
@@ -682,6 +703,7 @@ export default function App() {
           onOpenDashboard={() => handleNavigate('dashboard')}
           unreadNotificationsCount={(data.notifications || []).filter(n => !n.isRead).length}
           onOpenNotifications={() => setIsNotificationOpen(true)}
+          onOpenGoogleSitelinks={() => setIsGoogleSitelinksOpen(true)}
         />
       )}
 
@@ -696,6 +718,7 @@ export default function App() {
           settings={data.settings}
           onNavigate={handleNavigate}
           onOpenDigitalServices={() => setIsDigitalServicesOpen(true)}
+          onOpenGoogleSitelinks={() => setIsGoogleSitelinksOpen(true)}
         />
       )}
 
@@ -733,6 +756,14 @@ export default function App() {
 
       {/* Smooth Scroll-To-Top Button */}
       <ScrollToTop />
+
+      {/* Google Search Results & Sitelinks Interactive Simulator Modal */}
+      <GoogleSearchSitelinksModal
+        isOpen={isGoogleSitelinksOpen}
+        onClose={() => setIsGoogleSitelinksOpen(false)}
+        settings={data.settings}
+        onNavigate={(view, param) => handleNavigate(view, param)}
+      />
 
       {/* RBAC Modals */}
       <LoginModal

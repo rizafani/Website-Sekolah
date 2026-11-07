@@ -36,6 +36,7 @@ import {
   SchoolSettings 
 } from '../types/index.ts';
 import { api } from '../services/api.ts';
+import { ImageUploader } from '../components/ImageUploader.tsx';
 
 interface AdminDashboardProps {
   data: DatabaseSchema;
@@ -787,25 +788,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Foto Kepala Sekolah (URL)</label>
-              <div className="flex items-center gap-2">
-                {settingsForm.principalPhoto && (
-                  <img
-                    src={settingsForm.principalPhoto}
-                    alt="Foto Kepala Sekolah"
-                    className="w-8 h-9 object-cover rounded border border-slate-200"
-                    onError={(e) => (e.currentTarget.style.display = 'none')}
-                  />
-                )}
-                <input
-                  type="text"
-                  value={settingsForm.principalPhoto || ''}
-                  onChange={(e) => setSettingsForm({ ...settingsForm, principalPhoto: e.target.value })}
-                  placeholder="/src/assets/images/headmaster_sman1julok_1793290495217.jpg"
-                  className="flex-1 px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none"
-                />
-              </div>
+            <div className="sm:col-span-2">
+              <ImageUploader
+                label="Unggah Foto Resmi Kepala Sekolah (Tanpa Perlu Link)"
+                currentImageUrl={settingsForm.principalPhoto}
+                onImageUploaded={(url) => setSettingsForm({ ...settingsForm, principalPhoto: url })}
+                aspectRatio="portrait"
+                placeholderText="Pilih atau seret berkas foto Kepala Sekolah ke sini"
+                helperText="Format JPG, PNG, atau WebP (Maks. 5 MB). Foto otomatis diunggah dan disimpan."
+              />
             </div>
 
             <div>

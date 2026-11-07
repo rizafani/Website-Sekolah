@@ -14,6 +14,10 @@ const __dirname = path.dirname(__filename);
 const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
 const BACKUP_DIR = path.join(DATA_DIR, 'backups');
+const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
 
 // Input Sanitization & XSS Mitigation Helper
 function sanitizeData(input: any): any {
@@ -283,7 +287,9 @@ async function startServer() {
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
   const isProduction = process.env.NODE_ENV === 'production';
 
-  app.use(express.json());
+  app.use(express.json({ limit: '15mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+  app.use('/uploads', express.static(UPLOADS_DIR));
 
   // Input Sanitization & XSS Prevention
   app.use((req, _res, next) => {
@@ -1945,7 +1951,23 @@ async function startServer() {
   const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
   app.post('/api/upload', authenticate, (req: AuthenticatedRequest, res) => {
-    const { filename, mimeType, fileSize, title } = req.body;
+    const filename = req.body.filename || req.body.fileName;
+    const base64Data = req.body.base64Data || req.body.fileData;
+    let mimeType = req.body.mimeType || req.body.type;
+    const fileSize = req.body.fileSize || (base64Data ? Math.round(base64Data.length * 0.75) : 0);
+    const title = req.body.title || filename;
+
+    if (!mimeType && base64Data && typeof base64Data === 'string' && base64Data.startsWith('data:')) {
+      const match = base64Data.match(/^data:([^;]+);/);
+      if (match) mimeType = match[1];
+    }
+    if (!mimeType && filename) {
+      const ext = filename.split('.').pop()?.toLowerCase();
+      if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'].includes(ext || '')) {
+        mimeType = ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
+      }
+    }
+
     if (!filename || !mimeType) {
       return res.status(400).json({ error: 'Nama berkas dan tipe MIME wajib disediakan.' });
     }
@@ -1976,6 +1998,18 @@ async function startServer() {
     const safeFilename = `upload_${Date.now()}_${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
     const fileUrl = `/uploads/${safeFilename}`;
 
+    // Write file to disk if base64Data provided
+    if (base64Data && typeof base64Data === 'string') {
+      try {
+        const cleanBase64 = base64Data.replace(/^data:[^;]+;base64,/, '');
+        const fileBuffer = Buffer.from(cleanBase64, 'base64');
+        const destPath = path.join(UPLOADS_DIR, safeFilename);
+        fs.writeFileSync(destPath, fileBuffer);
+      } catch (err) {
+        console.warn('Gagal menulis berkas ke disk uploads:', err);
+      }
+    }
+
     const newMedia = {
       id: `med-${Date.now()}`,
       title: title || filename,
@@ -1995,7 +2029,8 @@ async function startServer() {
     res.status(201).json({
       success: true,
       message: 'Berkas berhasil diverifikasi dan disimpan secara aman.',
-      file: newMedia
+      file: newMedia,
+      url: fileUrl
     });
   });
 

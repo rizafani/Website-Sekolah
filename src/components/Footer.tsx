@@ -13,11 +13,17 @@ import { SchoolSettings } from '../types/index.ts';
 
 interface FooterProps {
   settings: SchoolSettings;
-  onNavigate: (view: string) => void;
+  onNavigate: (view: string, param?: string) => void;
   onOpenDigitalServices: () => void;
+  onOpenGoogleSitelinks?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ settings, onNavigate, onOpenDigitalServices }) => {
+export const Footer: React.FC<FooterProps> = ({ 
+  settings, 
+  onNavigate, 
+  onOpenDigitalServices,
+  onOpenGoogleSitelinks
+}) => {
   return (
     <footer className="bg-slate-950 text-slate-400 border-t border-slate-800 text-sm">
       {/* Top Banner / Accreditation Ribbon */}
@@ -202,6 +208,17 @@ export const Footer: React.FC<FooterProps> = ({ settings, onNavigate, onOpenDigi
                 Kebijakan Privasi & Ketentuan
               </button>
             </li>
+            {onOpenGoogleSitelinks && (
+              <li>
+                <button 
+                  onClick={onOpenGoogleSitelinks} 
+                  className="text-sky-300 hover:text-white transition-colors text-left flex items-center gap-1.5 font-medium py-0.5"
+                >
+                  <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Pratinjau Google Sitelinks SERP</span>
+                </button>
+              </li>
+            )}
             <li>
               <button onClick={() => onNavigate('admin')} className="text-slate-500 hover:text-slate-300 transition-colors text-left text-[11px] pt-1 block">
                 Portal Admin Operator Sekolah
