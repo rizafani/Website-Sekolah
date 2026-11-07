@@ -98,8 +98,8 @@ export const initialRoles: RoleDefinition[] = [
 // All pre-seeded accounts have standard password: "Password123!"
 // Hash generated via sha256("Password123!" + salt)
 // Salt: "julok_salt_2026"
-// SHA-256("Password123!julok_salt_2026") = "84e31464b97585f950b7ca4b2ec7da7c555543c7b80c5ee9653a6f4e15647711"
-const COMMON_HASH = "84e31464b97585f950b7ca4b2ec7da7c555543c7b80c5ee9653a6f4e15647711";
+// SHA-256("Password123!julok_salt_2026") = "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447"
+const COMMON_HASH = "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447";
 const COMMON_SALT = "julok_salt_2026";
 
 export const initialUsers: User[] = [

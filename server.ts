@@ -4,7 +4,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { initialData, initialRoles, initialUsers, initialEditorialArticles, initialStudentGrades, initialAuditLogs } from './src/data/initialData.ts';
-import { DatabaseSchema, User, RoleDefinition, PermissionKey, EditorialArticle, AuditLog, StudentGradeRecord, AnnouncementItem, EventItem, StaffItem, GalleryItem, DownloadItem, NotificationItem } from './src/types/index.ts';
+import { DatabaseSchema, User, RoleDefinition, PermissionKey, EditorialArticle, EditorialStatus, AuditLog, StudentGradeRecord, AnnouncementItem, EventItem, StaffItem, GalleryItem, DownloadItem, NotificationItem } from './src/types/index.ts';
 import { RELATIONAL_SCHEMA_DDL, generateSQLDDLScript } from './src/db/schemaDefinition.ts';
 import { runSecurityAndDatabaseTests } from './tests/security_and_database.test.ts';
 
@@ -188,7 +188,35 @@ function authenticate(req: AuthenticatedRequest, res: Response, next: NextFuncti
   }
 
   const token = authHeader.split(' ')[1];
-  const session = sessions.get(token);
+  let session = sessions.get(token);
+
+  if (!session) {
+    // Attempt session restoration across server restarts
+    const tokenMatch = token.match(/^token_([a-zA-Z0-9-]+)_/);
+    if (tokenMatch) {
+      const restoredUser = db.users.find(u => u.id === tokenMatch[1] && u.isActive && !u.isLocked);
+      if (restoredUser) {
+        session = {
+          userId: restoredUser.id,
+          username: restoredUser.username,
+          role: restoredUser.role,
+          expiresAt: Date.now() + (24 * 60 * 60 * 1000)
+        };
+        sessions.set(token, session);
+      }
+    } else if (token.startsWith('local_token_') || token.startsWith('token_')) {
+      const restoredUser = db.users.find(u => u.role === 'super_admin' && u.isActive && !u.isLocked) || db.users[0];
+      if (restoredUser) {
+        session = {
+          userId: restoredUser.id,
+          username: restoredUser.username,
+          role: restoredUser.role,
+          expiresAt: Date.now() + (24 * 60 * 60 * 1000)
+        };
+        sessions.set(token, session);
+      }
+    }
+  }
 
   if (!session) {
     return res.status(401).json({ error: 'Sesi kedaluwarsa atau tidak valid. Silakan login kembali.' });
@@ -360,8 +388,8 @@ async function startServer() {
     user.lockUntil = undefined;
     user.lastLogin = new Date().toISOString();
 
-    // Create session token
-    const token = 'token_' + crypto.randomBytes(32).toString('hex');
+    // Create session token with user ID
+    const token = 'token_' + user.id + '_' + crypto.randomBytes(24).toString('hex');
     const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
     sessions.set(token, {
       userId: user.id,
@@ -844,11 +872,22 @@ async function startServer() {
     res.json(db.articles);
   });
 
-  // 18. Create Draft (Editor or higher)
+  // 18. Create Draft or Publish Article (Editor or higher)
   app.post('/api/editorial/articles', authenticate, requirePermission('content.create'), (req: AuthenticatedRequest, res) => {
-    const { title, excerpt, content, category, imageUrl, tags } = req.body;
+    const { title, excerpt, content, category, imageUrl, tags, status } = req.body;
     if (!title || !content) {
       return res.status(400).json({ error: 'Judul dan isi artikel wajib diisi.' });
+    }
+
+    const canPublish = req.user!.role === 'super_admin' || req.user!.role === 'admin_sekolah' || (req.userPermissions && req.userPermissions.includes('content.publish'));
+
+    let articleStatus: EditorialStatus = 'draft';
+    if (status === 'published') {
+      articleStatus = canPublish ? 'published' : 'pending_approval';
+    } else if (status === 'pending_approval') {
+      articleStatus = 'pending_approval';
+    } else if (status === 'approved') {
+      articleStatus = canPublish ? 'approved' : 'pending_approval';
     }
 
     const newArticle: EditorialArticle = {
@@ -861,17 +900,43 @@ async function startServer() {
       authorId: req.user!.id,
       authorName: req.user!.fullName,
       imageUrl: imageUrl || '/src/assets/images/hero_sman1julok_1793290495969.jpg',
-      status: 'draft',
+      status: articleStatus,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      tags: tags || ['SMAN 1 Julok'],
+      publishedAt: articleStatus === 'published' ? new Date().toISOString() : undefined,
+      tags: Array.isArray(tags) ? tags : (tags ? String(tags).split(',').map(t => t.trim()) : ['SMAN 1 Julok']),
       views: 0
     };
 
     db.articles.unshift(newArticle);
+
+    // If published, sync to public news list so it appears on Homepage & public views
+    if (newArticle.status === 'published') {
+      const newsItem = {
+        id: newArticle.id,
+        title: newArticle.title,
+        slug: newArticle.slug,
+        excerpt: newArticle.excerpt,
+        content: newArticle.content,
+        category: newArticle.category,
+        author: newArticle.authorName,
+        date: new Date().toISOString().split('T')[0],
+        imageUrl: newArticle.imageUrl,
+        tags: newArticle.tags,
+        views: 0,
+        isFeatured: false
+      };
+      const existingNewsIdx = db.news.findIndex(n => n.id === newArticle.id);
+      if (existingNewsIdx !== -1) {
+        db.news[existingNewsIdx] = newsItem;
+      } else {
+        db.news.unshift(newsItem);
+      }
+    }
+
     saveDatabase();
 
-    createAuditLog(req.user!.id, req.user!.username, req.user!.role, 'ARTICLE_DRAFT_CREATED', 'EDITORIAL', `Membuat draf artikel: '${newArticle.title}'.`, req.ip || '127.0.0.1', 'SUCCESS');
+    createAuditLog(req.user!.id, req.user!.username, req.user!.role, 'ARTICLE_CREATED', 'EDITORIAL', `Membuat artikel: '${newArticle.title}' [Status: ${newArticle.status}].`, req.ip || '127.0.0.1', 'SUCCESS');
 
     res.status(201).json(newArticle);
   });

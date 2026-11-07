@@ -10,7 +10,7 @@
     "principalName": "Drs. T. Muhammad Yusuf, M.Pd.",
     "principalNip": "19680512 199403 1 004",
     "principalPhoto": "/src/assets/images/headmaster_sman1julok_1793290495217.jpg",
-    "principalSpeech": "Bismillahirrohmaanirrohiim. Assalamu'alaikum Warahmatullahi Wabarakatuh. Puji dan syukur kita panjatkan ke hadirat Allah SWT serta shalawat beriring salam kepada junjungan Nabi Besar Muhammad SAW. Selamat datang di portal resmi SMA Negeri 1 Julok, Kabupaten Aceh Timur. Website ini kami hadirkan sebagai media transparansi informasi, komunikasi interaktif, serta pintu gerbang layanan digital bagi seluruh warga sekolah, orang tua, alumni, dan masyarakat luas. Di era transformasi digital dan implementasi Kurikulum Merdeka, SMA Negeri 1 Julok terus berbenah membina generasi muda Aceh yang kokoh dalam akidah, mulia dalam akhlak, unggul dalam sains dan teknologi, serta berdaya saing di kancah nasional maupun internasional. Mari bersama-sama kita wujudkan pendidikan yang memerdekakan dan bermartabat.",
+    "principalSpeech": "Selamat datang di website resmi SMA Negeri 1 Julok.",
     "address": "Jl. Lintas Medan - Banda Aceh Km. 362, Desa Buket Seuraja",
     "village": "Buket Seuraja",
     "district": "Kecamatan Julok",
@@ -38,6 +38,41 @@
     }
   },
   "news": [
+    {
+      "id": "art-1794022585308",
+      "title": "Ujian Asesmen Bakat Minat Siswa Kelas XII",
+      "slug": "ujian-asesmen-bakat-minat-siswa-kelas-xii",
+      "excerpt": "Pelaksanaan asesmen bakat minat di laboratorium komputer SMAN 1 Julok.",
+      "content": "Asesmen berlangsung tertib dengan panduan teknisi dan guru BK sekolah.",
+      "category": "Akademik",
+      "author": "Administrator Sistem Utama",
+      "date": "2026-11-07",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "tags": [
+        "Asesmen",
+        "Kelas XII"
+      ],
+      "views": 0,
+      "isFeatured": false
+    },
+    {
+      "id": "art-1794022484598",
+      "title": "Prestasi Gemilang Siswa SMAN 1 Julok di OSN 2026",
+      "slug": "prestasi-gemilang-siswa-sman-1-julok-di-osn-2026",
+      "excerpt": "Siswa SMA Negeri 1 Julok berhasil menorehkan prestasi membanggakan pada ajang Olimpiade Sains Nasional tingkat provinsi.",
+      "content": "Alhamdulillah, siswa dan siswi SMA Negeri 1 Julok berhasil meraih medali pada ajang OSN 2026. Kepala Sekolah mengapresiasi dedikasi guru pembimbing dan seluruh siswa.",
+      "category": "Prestasi",
+      "author": "Administrator Sistem Utama",
+      "date": "2026-11-07",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "tags": [
+        "OSN",
+        "Prestasi",
+        "Akademik"
+      ],
+      "views": 0,
+      "isFeatured": false
+    },
     {
       "id": "news-1",
       "title": "Siswa SMAN 1 Julok Raih Medali Emas Olimpiade Sains Nasional Tingkat Provinsi Aceh",
@@ -937,5 +972,1177 @@
       "category": "Fasilitas"
     }
   ],
-  "adminPasscode": "admin123"
+  "adminPasscode": "admin123",
+  "users": [
+    {
+      "id": "usr-superadmin",
+      "username": "superadmin",
+      "email": "superadmin@sman1julok.sch.id",
+      "fullName": "Administrator Sistem Utama",
+      "role": "super_admin",
+      "passwordHash": "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447",
+      "salt": "julok_salt_2026",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      "isActive": true,
+      "isLocked": false,
+      "failedLoginAttempts": 0,
+      "createdAt": "2026-01-01T08:00:00Z",
+      "phone": "081269001100",
+      "lastLogin": "2026-11-07T03:36:25.277Z"
+    },
+    {
+      "id": "usr-adminsekolah",
+      "username": "admin.sekolah",
+      "email": "kepsek@sman1julok.sch.id",
+      "fullName": "Drs. T. Muhammad Yusuf, M.Pd.",
+      "role": "admin_sekolah",
+      "passwordHash": "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447",
+      "salt": "julok_salt_2026",
+      "avatarUrl": "/src/assets/images/headmaster_sman1julok_1793290495217.jpg",
+      "isActive": true,
+      "isLocked": false,
+      "failedLoginAttempts": 0,
+      "createdAt": "2026-01-05T09:00:00Z",
+      "nip": "19680512 199403 1 004",
+      "phone": "081269001122",
+      "lastLogin": "2026-11-07T03:34:55.868Z"
+    },
+    {
+      "id": "usr-editor",
+      "username": "editor.redaksi",
+      "email": "editor@sman1julok.sch.id",
+      "fullName": "Cut Maryani, S.Pd. (Tim Humas)",
+      "role": "editor",
+      "passwordHash": "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447",
+      "salt": "julok_salt_2026",
+      "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80",
+      "isActive": true,
+      "isLocked": false,
+      "failedLoginAttempts": 0,
+      "createdAt": "2026-01-10T10:00:00Z",
+      "nip": "19841103 201001 2 018",
+      "phone": "081360112233",
+      "lastLogin": "2026-11-07T03:34:55.893Z"
+    },
+    {
+      "id": "usr-guru",
+      "username": "guru.biologi",
+      "email": "nurul.guru@sman1julok.sch.id",
+      "fullName": "Nurul Hidayati, S.Pd., M.Si.",
+      "role": "guru",
+      "passwordHash": "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447",
+      "salt": "julok_salt_2026",
+      "avatarUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80",
+      "isActive": true,
+      "isLocked": false,
+      "failedLoginAttempts": 0,
+      "createdAt": "2026-01-12T11:00:00Z",
+      "nip": "19750821 200012 2 002",
+      "subject": "Biologi & Kurikulum",
+      "phone": "081265432100"
+    },
+    {
+      "id": "usr-siswa",
+      "username": "siswa.rayhan",
+      "email": "rayhan.siswa@sman1julok.sch.id",
+      "fullName": "Muhammad Rayhan",
+      "role": "siswa",
+      "passwordHash": "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447",
+      "salt": "julok_salt_2026",
+      "avatarUrl": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80",
+      "isActive": true,
+      "isLocked": false,
+      "failedLoginAttempts": 0,
+      "createdAt": "2026-07-15T08:00:00Z",
+      "nisn": "0087429182",
+      "classId": "XI Fase F-1 (MIPA)",
+      "phone": "082277889900"
+    },
+    {
+      "id": "usr-operator",
+      "username": "operator.dapodik",
+      "email": "munir.tu@sman1julok.sch.id",
+      "fullName": "Muhammad Munir, A.Md.",
+      "role": "operator_tu",
+      "passwordHash": "8ad2646fb1e1257b1ff77ff9ece0499cdd56da66cc7b4e60513c1142a038c447",
+      "salt": "julok_salt_2026",
+      "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80",
+      "isActive": true,
+      "isLocked": false,
+      "failedLoginAttempts": 0,
+      "createdAt": "2026-01-15T08:30:00Z",
+      "nip": "19920815 202012 1 007",
+      "phone": "085299112233"
+    }
+  ],
+  "roles": [
+    {
+      "id": "role-superadmin",
+      "name": "super_admin",
+      "label": "Super Admin",
+      "description": "Akses tata kelola tertinggi, manajemen role kustom, provisi akun, dan audit keamanan sistem.",
+      "isSystemRole": true,
+      "permissions": [
+        "content.view",
+        "content.create",
+        "content.edit",
+        "content.delete",
+        "content.approve",
+        "content.publish",
+        "document.manage",
+        "spmb.verify",
+        "grades.manage",
+        "grades.view_own",
+        "users.manage",
+        "roles.manage",
+        "audit.view",
+        "settings.manage"
+      ]
+    },
+    {
+      "id": "role-adminsekolah",
+      "name": "admin_sekolah",
+      "label": "Admin Sekolah",
+      "description": "Pengelolaan operasional sekolah, persetujuan konten berita, data akademik, dan administrasi umum.",
+      "isSystemRole": true,
+      "permissions": [
+        "content.view",
+        "content.create",
+        "content.edit",
+        "content.delete",
+        "content.approve",
+        "content.publish",
+        "document.manage",
+        "spmb.verify",
+        "grades.manage",
+        "users.manage",
+        "audit.view",
+        "settings.manage"
+      ]
+    },
+    {
+      "id": "role-editor",
+      "name": "editor",
+      "label": "Editor Konten",
+      "description": "Penyusun dan penyunting berita/artikel sekolah. Berada pada alur editorial dan tidak dapat langsung mempublikasikan tanpa persetujuan.",
+      "isSystemRole": true,
+      "permissions": [
+        "content.view",
+        "content.create",
+        "content.edit"
+      ]
+    },
+    {
+      "id": "role-guru",
+      "name": "guru",
+      "label": "Dewan Guru",
+      "description": "Pengelolaan capaian pembelajaran, penilaian nilai rapor (E-Rapor), jadwal ajar, dan materi kelas.",
+      "isSystemRole": true,
+      "permissions": [
+        "content.view",
+        "grades.manage",
+        "document.manage"
+      ]
+    },
+    {
+      "id": "role-siswa",
+      "name": "siswa",
+      "label": "Siswa / Murid",
+      "description": "Akses terbatas untuk melihat data profil diri, jadwal pelajaran, dan nilai rapor pribadi. Dilarang melihat data siswa lain atau konsol admin.",
+      "isSystemRole": true,
+      "permissions": [
+        "grades.view_own"
+      ]
+    },
+    {
+      "id": "role-operatortu",
+      "name": "operator_tu",
+      "label": "Operator / Tata Usaha",
+      "description": "Pengelolaan berkas kedinasan, verifikasi berkas pendaftaran SPMB, sinkronisasi Dapodik, dan layanan persuratan.",
+      "isSystemRole": true,
+      "permissions": [
+        "content.view",
+        "spmb.verify",
+        "document.manage"
+      ]
+    }
+  ],
+  "articles": [
+    {
+      "id": "art-1794022585308",
+      "title": "Ujian Asesmen Bakat Minat Siswa Kelas XII",
+      "slug": "ujian-asesmen-bakat-minat-siswa-kelas-xii",
+      "excerpt": "Pelaksanaan asesmen bakat minat di laboratorium komputer SMAN 1 Julok.",
+      "content": "Asesmen berlangsung tertib dengan panduan teknisi dan guru BK sekolah.",
+      "category": "Akademik",
+      "authorId": "usr-superadmin",
+      "authorName": "Administrator Sistem Utama",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "status": "published",
+      "createdAt": "2026-11-07T03:36:25.309Z",
+      "updatedAt": "2026-11-07T03:36:25.309Z",
+      "publishedAt": "2026-11-07T03:36:25.309Z",
+      "tags": [
+        "Asesmen",
+        "Kelas XII"
+      ],
+      "views": 0
+    },
+    {
+      "id": "art-1794022495900",
+      "title": "Kegiatan Literasi dan Numerasi Siswa Fase E",
+      "slug": "kegiatan-literasi-dan-numerasi-siswa-fase-e",
+      "excerpt": "Kegiatan peningkatan budaya membaca di perpustakaan SMAN 1 Julok.",
+      "content": "Seluruh siswa kelas X antusias mengikuti program literasi pagi sebelum jam pelajaran pertama dimulai.",
+      "category": "Kegiatan",
+      "authorId": "usr-editor",
+      "authorName": "Cut Maryani, S.Pd. (Tim Humas)",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "status": "draft",
+      "createdAt": "2026-11-07T03:34:55.900Z",
+      "updatedAt": "2026-11-07T03:34:55.900Z",
+      "tags": [
+        "SMAN 1 Julok"
+      ],
+      "views": 0
+    },
+    {
+      "id": "art-1794022484598",
+      "title": "Prestasi Gemilang Siswa SMAN 1 Julok di OSN 2026",
+      "slug": "prestasi-gemilang-siswa-sman-1-julok-di-osn-2026",
+      "excerpt": "Siswa SMA Negeri 1 Julok berhasil menorehkan prestasi membanggakan pada ajang Olimpiade Sains Nasional tingkat provinsi.",
+      "content": "Alhamdulillah, siswa dan siswi SMA Negeri 1 Julok berhasil meraih medali pada ajang OSN 2026. Kepala Sekolah mengapresiasi dedikasi guru pembimbing dan seluruh siswa.",
+      "category": "Prestasi",
+      "authorId": "usr-superadmin",
+      "authorName": "Administrator Sistem Utama",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "status": "published",
+      "createdAt": "2026-11-07T03:34:44.598Z",
+      "updatedAt": "2026-11-07T03:34:44.598Z",
+      "publishedAt": "2026-11-07T03:34:44.598Z",
+      "tags": [
+        "OSN",
+        "Prestasi",
+        "Akademik"
+      ],
+      "views": 0
+    },
+    {
+      "id": "art-001",
+      "title": "Siswa SMAN 1 Julok Raih Medali Emas Olimpiade Sains Nasional Tingkat Provinsi Aceh",
+      "slug": "siswa-sman-1-julok-raih-medali-emas-osn-provinsi",
+      "excerpt": "Prestasi membanggakan kembali ditorehkan oleh kontingen SMAN 1 Julok pada ajang OSN bidang Biologi dan Astronomi tingkat Provinsi.",
+      "content": "Prestasi gemilang kembali dipersembahkan oleh putra-putri terbaik SMA Negeri 1 Julok. Dalam ajang Olimpiade Sains Nasional tingkat Provinsi (OSN-P) Aceh tahun ini, Muhammad Rayhan (Kelas XI Fase F-1) berhasil menyabet Medali Emas untuk bidang Biologi...",
+      "category": "Prestasi",
+      "authorId": "usr-editor",
+      "authorName": "Cut Maryani, S.Pd.",
+      "imageUrl": "/src/assets/images/lab_sman1julok_1793290496393.jpg",
+      "status": "published",
+      "reviewerId": "usr-adminsekolah",
+      "reviewerName": "Drs. T. Muhammad Yusuf, M.Pd.",
+      "reviewNotes": "Disetujui untuk publikasi resmi pada beranda sekolah.",
+      "createdAt": "2026-10-17T09:00:00Z",
+      "updatedAt": "2026-10-18T10:00:00Z",
+      "publishedAt": "2026-10-18T10:30:00Z",
+      "tags": [
+        "OSN",
+        "Biologi",
+        "Prestasi"
+      ],
+      "views": 1240
+    },
+    {
+      "id": "art-002",
+      "title": "Rencana Pelaksanaan Pesantren Kilat Ramadhan 1448 H di Musholla Al-Ikhlas",
+      "slug": "rencana-pelaksanaan-pesantren-kilat-ramadhan-1448h",
+      "excerpt": "Kegiatan intensif pendalaman kitab suci, tahsin tilawah, dan buka puasa bersama seluruh dewan guru dan siswa.",
+      "content": "Menyambut bulan suci Ramadhan, Rohani Islam SMAN 1 Julok menyusun jadwal kegiatan pesantren kilat selama 10 hari...",
+      "category": "Budaya & Agama",
+      "authorId": "usr-editor",
+      "authorName": "Cut Maryani, S.Pd.",
+      "imageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "status": "pending_approval",
+      "reviewNotes": "Menunggu peninjauan jadwal dari Waka Kesiswaan.",
+      "createdAt": "2026-10-27T11:00:00Z",
+      "updatedAt": "2026-10-28T08:00:00Z",
+      "tags": [
+        "Ramadhan",
+        "Rohis",
+        "Keagamaan"
+      ],
+      "views": 0
+    },
+    {
+      "id": "art-003",
+      "title": "Draf Panduan Penggunaan Laboratorium Komputer dan Perangkat Multimedia Baru",
+      "slug": "draf-panduan-penggunaan-laboratorium-komputer",
+      "excerpt": "SOP terbaru peminjaman PC dan pemanfaatan headset audio untuk kegiatan pembelajaran mandiri siswa.",
+      "content": "Dalam upaya menjaga ketahanan perangkat 42 unit PC baru, seluruh pengguna wajib mematuhi standar operasional...",
+      "category": "Akademik",
+      "authorId": "usr-editor",
+      "authorName": "Cut Maryani, S.Pd.",
+      "imageUrl": "/src/assets/images/lab_sman1julok_1793290496393.jpg",
+      "status": "draft",
+      "createdAt": "2026-10-29T08:00:00Z",
+      "updatedAt": "2026-10-29T08:00:00Z",
+      "tags": [
+        "SOP",
+        "Laboratorium",
+        "TIK"
+      ],
+      "views": 0
+    },
+    {
+      "id": "art-004",
+      "title": "Laporan Eksplorasi Ekosistem Pesisir dan Hutan Mangrove Kuala Julok",
+      "slug": "laporan-eksplorasi-ekosistem-pesisir-kuala-julok",
+      "excerpt": "Catatan lapangan siswa dalam mengidentifikasi flora mangrove Rhizophora dan Avicennia di pesisir Julok.",
+      "content": "Artikel riset siswa ini memerlukan perbaikan data statistik salinitas air sebelum disetujui...",
+      "category": "Artikel Siswa",
+      "authorId": "usr-editor",
+      "authorName": "Cut Maryani, S.Pd.",
+      "imageUrl": "/src/assets/images/extracurricular_sman1julok_1793290498428.jpg",
+      "status": "rejected",
+      "reviewerId": "usr-adminsekolah",
+      "reviewerName": "Drs. T. Muhammad Yusuf, M.Pd.",
+      "reviewNotes": "Mohon perbaiki diagram salinitas air pada halaman 2 dan cantumkan daftar pustaka yang valid sebelum diajukan kembali.",
+      "createdAt": "2026-10-24T14:00:00Z",
+      "updatedAt": "2026-10-25T16:00:00Z",
+      "tags": [
+        "Mangrove",
+        "Riset",
+        "Biologi"
+      ],
+      "views": 0
+    }
+  ],
+  "grades": [
+    {
+      "id": "grade-rayhan-ganjil",
+      "studentId": "usr-siswa",
+      "studentName": "Muhammad Rayhan",
+      "nisn": "0087429182",
+      "className": "XI Fase F-1 (MIPA)",
+      "semester": "Ganjil",
+      "academicYear": "2026/2027",
+      "subjects": [
+        {
+          "subjectName": "Biologi (Peminatan)",
+          "teacherName": "Nurul Hidayati, S.Pd., M.Si.",
+          "score": 96,
+          "letterGrade": "A",
+          "competencyDesc": "Sangat mahir dalam menganalisis biologi sel, sintesis protein, serta penerapan bioteknologi terapan."
+        },
+        {
+          "subjectName": "Fisika",
+          "teacherName": "Iskandar, S.Pd., M.Pd.",
+          "score": 91,
+          "letterGrade": "A",
+          "competencyDesc": "Sangat baik dalam memahami mekanika fluida dinamis dan termodinamika."
+        },
+        {
+          "subjectName": "Matematika Tingkat Lanjut",
+          "teacherName": "Rahmatsyah, S.Pd.",
+          "score": 89,
+          "letterGrade": "A",
+          "competencyDesc": "Mampu menyelesaikan masalah polinomial dan trigonometri analitik dengan teliti."
+        },
+        {
+          "subjectName": "Kimia",
+          "teacherName": "Fauziah, S.Pd.",
+          "score": 92,
+          "letterGrade": "A",
+          "competencyDesc": "Menguasai konsep stoikiometri dan hukum-hukum dasar kimia analitik."
+        },
+        {
+          "subjectName": "Pendidikan Agama Islam",
+          "teacherName": "Tgk. Zulfikar, S.Pd.I., M.Ag.",
+          "score": 95,
+          "letterGrade": "A",
+          "competencyDesc": "Sangat taat dalam pengamalan syariat, tartil Al-Qur'an, dan berakhlak mulia."
+        },
+        {
+          "subjectName": "Bahasa Indonesia",
+          "teacherName": "Drs. Syarifuddin",
+          "score": 90,
+          "letterGrade": "A",
+          "competencyDesc": "Terampil menyusun teks karya ilmiah dan kritik sastra objektif."
+        },
+        {
+          "subjectName": "Bahasa Inggris",
+          "teacherName": "Cut Maryani, S.Pd.",
+          "score": 94,
+          "letterGrade": "A",
+          "competencyDesc": "Lancar berkomunikasi lisan dan menulis teks eksposisi analitis."
+        }
+      ],
+      "attendance": {
+        "present": 98,
+        "sick": 2,
+        "permission": 0,
+        "unexcused": 0
+      },
+      "homeroomNotes": "Pertahankan prestasi akademik gemilang dan kejuaraan OSN Biologi. Teruslah menjadi teladan bagi rekan-rekan sekelas."
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log-1794022585309-ob2n",
+      "timestamp": "2026-11-07T03:36:25.309Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "ARTICLE_CREATED",
+      "resource": "EDITORIAL",
+      "details": "Membuat artikel: 'Ujian Asesmen Bakat Minat Siswa Kelas XII' [Status: published].",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022585301-dmxb",
+      "timestamp": "2026-11-07T03:36:25.301Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "SETTINGS_UPDATED",
+      "resource": "SETTINGS",
+      "details": "Memperbarui informasi dan pengaturan sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022585278-t0lh",
+      "timestamp": "2026-11-07T03:36:25.278Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022512084-785d",
+      "timestamp": "2026-11-07T03:35:12.084Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "SETTINGS_UPDATED",
+      "resource": "SETTINGS",
+      "details": "Memperbarui informasi dan pengaturan sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022512068-6pxr",
+      "timestamp": "2026-11-07T03:35:12.068Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022495900-gvgi",
+      "timestamp": "2026-11-07T03:34:55.900Z",
+      "userId": "usr-editor",
+      "username": "editor.redaksi",
+      "userRole": "editor",
+      "action": "ARTICLE_CREATED",
+      "resource": "EDITORIAL",
+      "details": "Membuat artikel: 'Kegiatan Literasi dan Numerasi Siswa Fase E' [Status: draft].",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022495893-jzsh",
+      "timestamp": "2026-11-07T03:34:55.893Z",
+      "userId": "usr-editor",
+      "username": "editor.redaksi",
+      "userRole": "editor",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role editor.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022495888-2avo",
+      "timestamp": "2026-11-07T03:34:55.888Z",
+      "userId": "usr-adminsekolah",
+      "username": "admin.sekolah",
+      "userRole": "admin_sekolah",
+      "action": "SETTINGS_UPDATED",
+      "resource": "SETTINGS",
+      "details": "Memperbarui informasi dan pengaturan sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022495869-aikl",
+      "timestamp": "2026-11-07T03:34:55.869Z",
+      "userId": "usr-adminsekolah",
+      "username": "admin.sekolah",
+      "userRole": "admin_sekolah",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role admin_sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022484599-db10",
+      "timestamp": "2026-11-07T03:34:44.599Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "ARTICLE_CREATED",
+      "resource": "EDITORIAL",
+      "details": "Membuat artikel: 'Prestasi Gemilang Siswa SMAN 1 Julok di OSN 2026' [Status: published].",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022484591-bz8v",
+      "timestamp": "2026-11-07T03:34:44.591Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "SETTINGS_UPDATED",
+      "resource": "SETTINGS",
+      "details": "Memperbarui informasi dan pengaturan sekolah.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022484566-nkyd",
+      "timestamp": "2026-11-07T03:34:44.566Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_SUCCESS",
+      "resource": "AUTH",
+      "details": "Login berhasil sebagai role super_admin.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-1794022167233-fpww",
+      "timestamp": "2026-11-07T03:29:27.233Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": "Kata sandi salah. Percobaan ke-2/5.",
+      "ipAddress": "127.0.0.1",
+      "status": "FAILED"
+    },
+    {
+      "id": "log-1794021950816-hsr6",
+      "timestamp": "2026-11-07T03:25:50.816Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": "Kata sandi salah. Percobaan ke-1/5.",
+      "ipAddress": "127.0.0.1",
+      "status": "FAILED"
+    },
+    {
+      "id": "log-001",
+      "timestamp": "2026-10-29T08:15:20Z",
+      "userId": "usr-superadmin",
+      "username": "superadmin",
+      "userRole": "super_admin",
+      "action": "SYSTEM_BOOTSTRAP",
+      "resource": "AUTH_PROVISIONING",
+      "details": "Sistem RBAC diinisialisasi dengan 6 role standar dan penguncian hak akses.",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-002",
+      "timestamp": "2026-10-29T08:30:10Z",
+      "userId": "usr-adminsekolah",
+      "username": "admin.sekolah",
+      "userRole": "admin_sekolah",
+      "action": "ARTICLE_APPROVE",
+      "resource": "EDITORIAL_PIPELINE",
+      "details": "Menyetujui penerbitan artikel: Siswa SMAN 1 Julok Raih Medali Emas OSN.",
+      "ipAddress": "192.168.1.10",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-003",
+      "timestamp": "2026-10-29T08:45:00Z",
+      "userId": "usr-editor",
+      "username": "editor.redaksi",
+      "userRole": "editor",
+      "action": "ARTICLE_SUBMIT_APPROVAL",
+      "resource": "EDITORIAL_PIPELINE",
+      "details": "Mengajukan draf artikel Pesantren Kilat Ramadhan untuk persetujuan pimpinan.",
+      "ipAddress": "192.168.1.14",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "log-004",
+      "timestamp": "2026-10-29T09:05:40Z",
+      "userId": "usr-siswa",
+      "username": "siswa.rayhan",
+      "userRole": "siswa",
+      "action": "VIEW_OWN_GRADES",
+      "resource": "STUDENT_PORTAL",
+      "details": "Melihat laporan hasil belajar E-Rapor pribadi semester ganjil.",
+      "ipAddress": "192.168.1.45",
+      "status": "SUCCESS"
+    }
+  ],
+  "resetRequests": [],
+  "isSuperAdminProvisioned": true,
+  "pages": [
+    {
+      "id": "page-1",
+      "title": "Program Unggulan SMAN 1 Julok: Tahfidz, Sains & Budaya",
+      "slug": "program-unggulan",
+      "excerpt": "Empat pilar program unggulan sekolah untuk mencetak generasi cerdas, berkarakter Islami, dan berwawasan global di Aceh Timur.",
+      "content": "### 1. Program Tahfidz Al-Qur'an & Pembiasaan Karakter Islami\nSebagai bagian integral dari syariat Islam di Provinsi Aceh, SMA Negeri 1 Julok menyelenggarakan bimbingan tahsin dan tahfidz Al-Qur'an 30 Juz bagi seluruh peserta didik. Program ini dibina oleh ustadz dan ustadzah berkompetensi tinggi, dengan target minimal hafalan Juz 30 dan Juz 1 bagi setiap lulusan.\n\n### 2. Kelas Intensif Riset & Olimpiade Sains Nasional (OSN)\nSekolah menyediakan pembinaan berkala bagi siswa berbakat di bidang Matematika, Fisika, Biologi, Kimia, Astronomi, dan Kebumian. Dilengkapi laboratorium sains modern dan akses jurnal ilmiah, siswa dilatih berfikir kritis dan menyelesaikan pemecahan masalah tingkat tinggi (HOTS).\n\n### 3. Gerakan Literasi & Digitalisasi Pembelajaran\nSMAN 1 Julok memfasilitasi setiap ruang kelas dengan sarana multimedia, perpustakaan digital terintegrasi (OPAC), serta asesmen berbasis komputer mandiri (CBT) untuk membiasakan siswa adaptif terhadap revolusi industri 4.0.\n\n### 4. Pelestarian Seni Budaya Tradisional Aceh\nSanggar Seni SMAN 1 Julok secara konsisten membina generasi muda dalam kesenian khas Aceh seperti Tari Ratoh Duek, Seudati, Saman, serta seni kaligrafi Arab kontemporer.",
+      "status": "published",
+      "author": "Drs. T. Muhammad Yusuf, M.Pd.",
+      "authorId": "usr-admin-sekolah",
+      "createdAt": "2026-08-15",
+      "updatedAt": "2026-10-20",
+      "publishedAt": "2026-08-20",
+      "menuPlacement": "both",
+      "viewCount": 1420,
+      "revisions": [
+        {
+          "id": "rev-p1-1",
+          "contentId": "page-1",
+          "contentType": "page",
+          "timestamp": "2026-08-15 09:30 WIB",
+          "authorName": "Drs. T. Muhammad Yusuf, M.Pd.",
+          "authorId": "usr-admin-sekolah",
+          "title": "Program Unggulan SMAN 1 Julok",
+          "content": "Draf awal program unggulan.",
+          "summary": "Pembuatan draf awal dokumen program prioritas sekolah."
+        }
+      ]
+    },
+    {
+      "id": "page-2",
+      "title": "Informasi Beasiswa & Bantuan Pendidikan Siswa",
+      "slug": "beasiswa-dan-bantuan",
+      "excerpt": "Panduan pengajuan Program Indonesia Pintar (PIP), Beasiswa Prestasi Pemerintah Aceh, dan Bantuan Khusus Siswa Kurang Mampu.",
+      "content": "### Panduan Beasiswa SMA Negeri 1 Julok\n\nPemerintah melalui Kementerian Pendidikan Dasar dan Menengah serta Dinas Pendidikan Aceh menyediakan ragam bantuan finansial bagi peserta didik:\n\n1. **Program Indonesia Pintar (PIP) Kemendikbudristek**\n   - Diperuntukkan bagi siswa pemegang Kartu Indonesia Pintar (KIP) atau terdaftar dalam Data Terpadu Kesejahteraan Sosial (DTKS).\n   - Besaran bantuan: Rp 1.800.000,- / tahun ajaran.\n   - Penyaluran langsung ke rekening SimPel Bank BSI (Bank Syariah Indonesia).\n\n2. **Beasiswa Prestasi Anak Aceh (BPAA)**\n   - Diberikan bagi siswa berprestasi Juara 1, 2, dan 3 di tingkat Kabupaten/Provinsi pada ajang OSN, O2SN, FLS2N, dan MTQ.\n   - Fasilitas bebas biaya seragam dan dana pembinaan akademik.\n\n3. **Bantuan Khusus Yatim & Dhuafa SMAN 1 Julok**\n   - Didukung oleh Unit Pengumpul Zakat (UPZ) dan alumni SMAN 1 Julok untuk menjamin kelangsungan pendidikan siswa hingga tamat.",
+      "status": "published",
+      "author": "Munirwan, S.Kom.",
+      "authorId": "usr-tu",
+      "createdAt": "2026-09-01",
+      "updatedAt": "2026-10-10",
+      "publishedAt": "2026-09-05",
+      "menuPlacement": "footer",
+      "viewCount": 890
+    }
+  ],
+  "contentCategories": [
+    {
+      "id": "cat-1",
+      "name": "Akademik",
+      "slug": "akademik",
+      "description": "Informasi pembelajaran, kurikulum, dan asesmen",
+      "postCount": 8
+    },
+    {
+      "id": "cat-2",
+      "name": "Prestasi",
+      "slug": "prestasi",
+      "description": "Pencapaian kejuaraan siswa, guru, dan sekolah",
+      "postCount": 12
+    },
+    {
+      "id": "cat-3",
+      "name": "Kegiatan",
+      "slug": "kegiatan",
+      "description": "Dokumentasi agenda, upacara, dan aktivitas siswa",
+      "postCount": 15
+    },
+    {
+      "id": "cat-4",
+      "name": "Pengumuman",
+      "slug": "pengumuman",
+      "description": "Pemberitahuan resmi kedinasan dan kalender sekolah",
+      "postCount": 10
+    },
+    {
+      "id": "cat-5",
+      "name": "Artikel Siswa",
+      "slug": "artikel-siswa",
+      "description": "Karya tulis, opini, dan esai karya warga sekolah",
+      "postCount": 6
+    },
+    {
+      "id": "cat-6",
+      "name": "Budaya & Agama",
+      "slug": "budaya-agama",
+      "description": "Kajian keislaman dan pelestarian adat Aceh",
+      "postCount": 7
+    }
+  ],
+  "contentTags": [
+    {
+      "id": "tag-1",
+      "name": "Kurikulum Merdeka",
+      "slug": "kurikulum-merdeka"
+    },
+    {
+      "id": "tag-2",
+      "name": "OSN",
+      "slug": "osn"
+    },
+    {
+      "id": "tag-3",
+      "name": "P5",
+      "slug": "p5"
+    },
+    {
+      "id": "tag-4",
+      "name": "Aceh Timur",
+      "slug": "aceh-timur"
+    },
+    {
+      "id": "tag-5",
+      "name": "Buket Seuraja",
+      "slug": "buket-seuraja"
+    },
+    {
+      "id": "tag-6",
+      "name": "Pramuka",
+      "slug": "pramuka"
+    },
+    {
+      "id": "tag-7",
+      "name": "Beasiswa",
+      "slug": "beasiswa"
+    },
+    {
+      "id": "tag-8",
+      "name": "CBT Online",
+      "slug": "cbt-online"
+    }
+  ],
+  "revisions": [
+    {
+      "id": "rev-1",
+      "contentId": "art-1",
+      "contentType": "article",
+      "timestamp": "2026-10-28 14:20 WIB",
+      "authorName": "Ahmad Fauzi, S.Pd.",
+      "authorId": "usr-editor",
+      "title": "Peringatan Hari Pahlawan 2026 di Lapangan SMAN 1 Julok",
+      "content": "Naskah awal liputan hari pahlawan di Buket Seuraja.",
+      "summary": "Pembaruan teks lead dan penambahan dokumentasi foto paduan suara."
+    }
+  ],
+  "media": [
+    {
+      "id": "med-1",
+      "title": "Foto Kampus Depan SMAN 1 Julok",
+      "url": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+      "fileType": "image",
+      "fileSize": "1.2 MB",
+      "uploadedAt": "2026-10-01",
+      "uploadedBy": "Super Admin",
+      "dimensions": "1920x1080"
+    },
+    {
+      "id": "med-2",
+      "title": "Gedung Laboratorium Komputer & Sains",
+      "url": "/src/assets/images/lab_sman1julok_1793290496393.jpg",
+      "fileType": "image",
+      "fileSize": "1.8 MB",
+      "uploadedAt": "2026-10-02",
+      "uploadedBy": "Operator TU",
+      "dimensions": "1920x1080"
+    },
+    {
+      "id": "med-3",
+      "title": "Logo Resmi SMAN 1 Julok Aceh Timur",
+      "url": "/src/assets/images/logo_sman1julok_1793290497184.png",
+      "fileType": "image",
+      "fileSize": "340 KB",
+      "uploadedAt": "2026-09-15",
+      "uploadedBy": "Super Admin",
+      "dimensions": "512x512"
+    }
+  ],
+  "schedules": [
+    {
+      "id": "sch-1",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Senin",
+      "period": 1,
+      "time": "07.45 - 09.05",
+      "subjectName": "Pendidikan Agama Islam & Budi Pekerti",
+      "teacherName": "Drs. Teuku Mukhtar",
+      "room": "Ruang X-1"
+    },
+    {
+      "id": "sch-2",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Senin",
+      "period": 2,
+      "time": "09.20 - 10.40",
+      "subjectName": "Bahasa Indonesia",
+      "teacherName": "Cut Rahmah, S.Pd.",
+      "room": "Ruang X-1"
+    },
+    {
+      "id": "sch-3",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Senin",
+      "period": 3,
+      "time": "10.40 - 12.00",
+      "subjectName": "Matematika Umum",
+      "teacherName": "Zulkifli, S.Pd., M.Si.",
+      "room": "Ruang X-1"
+    },
+    {
+      "id": "sch-4",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Selasa",
+      "period": 1,
+      "time": "07.45 - 09.05",
+      "subjectName": "Biologi (IPA Terpadu)",
+      "teacherName": "Nurul Hidayati, S.Pd., M.Si.",
+      "room": "Lab Biologi"
+    },
+    {
+      "id": "sch-5",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Selasa",
+      "period": 2,
+      "time": "09.20 - 10.40",
+      "subjectName": "Fisika (IPA Terpadu)",
+      "teacherName": "M. Nasir, S.Pd.",
+      "room": "Lab Fisika"
+    },
+    {
+      "id": "sch-6",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Rabu",
+      "period": 1,
+      "time": "07.45 - 09.05",
+      "subjectName": "Bahasa Inggris",
+      "teacherName": "Siti Sarah, S.Pd.",
+      "room": "Ruang X-1"
+    },
+    {
+      "id": "sch-7",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Rabu",
+      "period": 2,
+      "time": "09.20 - 10.40",
+      "subjectName": "Sejarah Indonesia & Kebudayaan Aceh",
+      "teacherName": "Iskandar Muda, S.Pd.",
+      "room": "Ruang X-1"
+    },
+    {
+      "id": "sch-8",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Kamis",
+      "period": 1,
+      "time": "07.45 - 09.45",
+      "subjectName": "Informatika & Literasi Digital",
+      "teacherName": "Munirwan, S.Kom.",
+      "room": "Lab Komputer 1"
+    },
+    {
+      "id": "sch-9",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Jumat",
+      "period": 1,
+      "time": "07.30 - 08.45",
+      "subjectName": "Yasinan & Muhadharah Bersama",
+      "teacherName": "Dewan Guru",
+      "room": "Masjid Sekolah"
+    },
+    {
+      "id": "sch-10",
+      "className": "X-1",
+      "grade": "X",
+      "day": "Jumat",
+      "period": 2,
+      "time": "09.00 - 10.15",
+      "subjectName": "Projek Penguatan Profil Pelajar Pancasila (P5)",
+      "teacherName": "Tim Fasilitator P5",
+      "room": "Aula Kampus"
+    },
+    {
+      "id": "sch-11",
+      "className": "XI MIPA 1",
+      "grade": "XI",
+      "day": "Senin",
+      "period": 1,
+      "time": "07.45 - 09.45",
+      "subjectName": "Biologi Tingkat Lanjut",
+      "teacherName": "Nurul Hidayati, S.Pd., M.Si.",
+      "room": "Lab Biologi"
+    },
+    {
+      "id": "sch-12",
+      "className": "XI MIPA 1",
+      "grade": "XI",
+      "day": "Senin",
+      "period": 2,
+      "time": "10.00 - 12.00",
+      "subjectName": "Matematika Tingkat Lanjut",
+      "teacherName": "Zulkifli, S.Pd., M.Si.",
+      "room": "Ruang XI-M1"
+    },
+    {
+      "id": "sch-13",
+      "className": "XI MIPA 1",
+      "grade": "XI",
+      "day": "Selasa",
+      "period": 1,
+      "time": "07.45 - 09.45",
+      "subjectName": "Kimia",
+      "teacherName": "Dewi Suryani, S.Pd.",
+      "room": "Lab Kimia"
+    }
+  ],
+  "learningMaterials": [
+    {
+      "id": "mat-1",
+      "title": "Modul Ajar Biologi: Struktur Sel & Metabolisme Enzim (Fase F)",
+      "subject": "Biologi",
+      "gradeLevel": "XI",
+      "topic": "Fisiologi Seluler & Biokimia",
+      "authorTeacher": "Nurul Hidayati, S.Pd., M.Si.",
+      "fileType": "PDF",
+      "fileSize": "3.4 MB",
+      "downloadUrl": "#",
+      "uploadedDate": "2026-10-05",
+      "isRestricted": false
+    },
+    {
+      "id": "mat-2",
+      "title": "Bahan Ajar Matematika: Fungsi Trigonometri & Limit Aljabar (Fase E)",
+      "subject": "Matematika",
+      "gradeLevel": "X",
+      "topic": "Trigonometri Dasar",
+      "authorTeacher": "Zulkifli, S.Pd., M.Si.",
+      "fileType": "PDF",
+      "fileSize": "2.8 MB",
+      "downloadUrl": "#",
+      "uploadedDate": "2026-09-28",
+      "isRestricted": false
+    },
+    {
+      "id": "mat-3",
+      "title": "Panduan Riset Karya Tulis Ilmiah Remaja (KIR) SMAN 1 Julok",
+      "subject": "Informatika & Riset",
+      "gradeLevel": "XI",
+      "topic": "Metodologi Penelitian Sains",
+      "authorTeacher": "Munirwan, S.Kom.",
+      "fileType": "PDF",
+      "fileSize": "4.1 MB",
+      "downloadUrl": "#",
+      "uploadedDate": "2026-10-12",
+      "isRestricted": false
+    },
+    {
+      "id": "mat-4",
+      "title": "Naskah Soal Uji Coba Asesmen Sumatif Akhir Semester (Khusus Guru)",
+      "subject": "Fisika",
+      "gradeLevel": "XII",
+      "topic": "Gelombang Elektromagnetik",
+      "authorTeacher": "M. Nasir, S.Pd.",
+      "fileType": "PDF",
+      "fileSize": "1.9 MB",
+      "downloadUrl": "#",
+      "uploadedDate": "2026-10-22",
+      "isRestricted": true
+    }
+  ],
+  "externalApps": [
+    {
+      "id": "app-cbt",
+      "name": "Portal Ujian CBT SMAN 1 Julok",
+      "category": "CBT / Ujian",
+      "url": "https://cbt.sman1julok.sch.id",
+      "description": "Aplikasi Computer Based Test resmi untuk Penilaian Sumatif, Gladi ANBK, dan Ujian Sekolah mandiri.",
+      "status": "Online",
+      "icon": "Monitor",
+      "isProtected": true
+    },
+    {
+      "id": "app-lms",
+      "name": "Google Classroom Madrasah & Sekolah",
+      "category": "LMS & E-Learning",
+      "url": "https://classroom.google.com",
+      "description": "Pengumpulan tugas daring, diskusi kelas interaktif, dan integrasi modul digital para guru.",
+      "status": "Online",
+      "icon": "BookOpen",
+      "isProtected": false
+    },
+    {
+      "id": "app-erapor",
+      "name": "E-Rapor Kurikulum Merdeka Kemendikbud",
+      "category": "E-Rapor Kurikulum Merdeka",
+      "url": "https://erapor.kemdikbud.go.id",
+      "description": "Pusat penginputan capaian kompetensi dan pencetakan buku rapor digital siswa ber-NPSN 10101890.",
+      "status": "Online",
+      "icon": "Award",
+      "isProtected": true
+    },
+    {
+      "id": "app-dapodik",
+      "name": "Dapodikdasmen Manajemen Sekolah",
+      "category": "Dapodik Kemendikbud",
+      "url": "https://dapo.kemdikbud.go.id",
+      "description": "Sinkronisasi data pokok pendidik, tenaga kependidikan, sarpras, dan rombongan belajar.",
+      "status": "Terkonfigurasi",
+      "icon": "Database",
+      "isProtected": true
+    },
+    {
+      "id": "app-opac",
+      "name": "Perpustakaan Digital 'Cut Nyak Dien'",
+      "category": "Perpustakaan Digital",
+      "url": "https://perpustakaan.sman1julok.sch.id",
+      "description": "Katalog online (OPAC), peminjaman buku elektronik, dan jurnal referensi siswa.",
+      "status": "Online",
+      "icon": "Library",
+      "isProtected": false
+    }
+  ],
+  "spmbSettings": {
+    "isOpen": true,
+    "academicYear": "2026/2027",
+    "startDate": "2026-05-01",
+    "endDate": "2026-07-05",
+    "announcementDate": "2026-07-10",
+    "reRegistrationDate": "2026-07-12 s.d 2026-07-16",
+    "quotas": {
+      "zonasi": 120,
+      "prestasi": 36,
+      "afirmasi": 30,
+      "perpindahan": 10,
+      "total": 196
+    },
+    "contactPerson": "Drs. Teuku Mukhtar (Ketua Panitia SPMB)",
+    "hotlinePhone": "+6281269001122",
+    "procedurePdfUrl": "#"
+  },
+  "polls": [
+    {
+      "id": "poll-1",
+      "title": "Survei Pilihan Tema Gelar Karya P5 Semester Genap 2026",
+      "description": "Partisipasi seluruh warga sekolah untuk memilih tema utama pameran karya Projek Penguatan Profil Pelajar Pancasila di SMAN 1 Julok.",
+      "question": "Manakah tema P5 yang paling ingin Anda eksplorasi pada pameran semester genap tahun ini?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Rekayasa & Teknologi Tepat Guna Pesisir Aceh",
+          "votes": 142
+        },
+        {
+          "id": "opt-2",
+          "text": "Kewirausahaan Olahan Pangan Lokal & Herbal Aceh Timur",
+          "votes": 189
+        },
+        {
+          "id": "opt-3",
+          "text": "Suara Demokrasi & Kepemimpinan Pelajar Pancasila",
+          "votes": 94
+        },
+        {
+          "id": "opt-4",
+          "text": "Gaya Hidup Berkelanjutan: Bank Sampah & Energi Hijau",
+          "votes": 121
+        }
+      ],
+      "totalVotes": 546,
+      "expiresAt": "2026-11-30",
+      "isActive": true,
+      "userVotedIds": []
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "title": "Draf Artikel Baru Memerlukan Persetujuan",
+      "message": "Editor telah mengajukan artikel 'Kunjungan Edukasi Geologi dan Sejarah Aceh' untuk ditinjau oleh Kepala Sekolah.",
+      "type": "approval_required",
+      "date": "2026-10-28 15:30",
+      "isRead": false,
+      "link": "dashboard",
+      "targetRole": "admin_sekolah"
+    },
+    {
+      "id": "notif-2",
+      "title": "Pendaftaran SPMB Baru Diterima",
+      "message": "Calon siswa atas nama 'Muhammad Farhan' (NISN: 0081293819) telah mengirimkan berkas pendaftaran online.",
+      "type": "spmb_new",
+      "date": "2026-10-28 11:15",
+      "isRead": false,
+      "link": "dashboard",
+      "targetRole": "operator_tu"
+    },
+    {
+      "id": "notif-3",
+      "title": "Jadwal Asesmen Bakat Minat (ABM) 2026",
+      "message": "Pengumuman jadwal resmi pelaksanaan simulasi ABM kelas XII telah diterbitkan di portal pengumuman.",
+      "type": "urgent_announcement",
+      "date": "2026-10-27 08:00",
+      "isRead": true,
+      "link": "pengumuman",
+      "targetRole": "all"
+    }
+  ],
+  "seoSettings": {
+    "metaTitle": "SMA Negeri 1 Julok - Buket Seuraja, Aceh Timur",
+    "metaDescription": "Website Resmi SMA Negeri 1 Julok, Desa Buket Seuraja, Kec. Julok, Kab. Aceh Timur, Aceh. Portal akademik, SPMB, profil sekolah, dan layanan digital.",
+    "keywords": "SMA Negeri 1 Julok, SMAN 1 Julok, Buket Seuraja, Sekolah Aceh Timur, SPMB SMAN 1 Julok, Kurikulum Merdeka Julok, Sekolah Unggulan Aceh",
+    "ogImageUrl": "/src/assets/images/hero_sman1julok_1793290495969.jpg",
+    "sitemapUrl": "https://sman1julok.sch.id/sitemap.xml",
+    "googleAnalyticsId": "G-JULOK2026SCH",
+    "searchConsoleCode": "google-site-verification=julok-secure-2026-aceh"
+  },
+  "integrationSettings": {
+    "dapodikUrl": "https://dapo.kemdikbud.go.id",
+    "dapodikStatus": "Tersinkronisasi",
+    "cbtExamUrl": "https://cbt.sman1julok.sch.id",
+    "googleClassroomUrl": "https://classroom.google.com",
+    "eraporUrl": "https://erapor.kemdikbud.go.id",
+    "smtpConfigured": false,
+    "smtpHost": "smtp.mailgun.org",
+    "smtpPort": 587,
+    "smtpUser": "postmaster@sman1julok.sch.id"
+  },
+  "stats": {
+    "studentsCount": 486,
+    "teachersCount": 38,
+    "staffCount": 12,
+    "classesCount": 16,
+    "extracurricularsCount": 14,
+    "alumniCount": 3240,
+    "accreditationScore": 94
+  }
 }

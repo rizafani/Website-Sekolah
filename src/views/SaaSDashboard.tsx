@@ -642,6 +642,7 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
           prev.map((a) => (a.id === editingArticle.id ? { ...a, ...updated } : a))
         );
         showToast('Artikel berhasil diperbarui!');
+        api.fetchAllData().then((d) => onRefresh(d)).catch(() => {});
       } else {
         // Create new article
         const newArt = await api.createEditorialDraft({
@@ -654,12 +655,17 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
           tags: articleFormData.tags.split(',').map((t) => t.trim())
         });
         setArticlesList((prev) => [newArt, ...prev]);
-        showToast('Draf artikel baru berhasil disimpan!');
+        showToast(
+          newArt.status === 'published'
+            ? 'Artikel berhasil diterbitkan ke website!'
+            : 'Draf artikel baru berhasil disimpan!'
+        );
+        api.fetchAllData().then((d) => onRefresh(d)).catch(() => {});
       }
       setIsArticleModalOpen(false);
       setEditingArticle(null);
-    } catch {
-      showToast('Gagal menyimpan artikel.', 'error');
+    } catch (err) {
+      showToast((err as Error).message || 'Gagal menyimpan artikel.', 'error');
     }
   };
 
@@ -891,9 +897,9 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
       const updated = await api.updateSettings(schoolSettings);
       setSchoolSettings(updated);
       onRefresh({ ...data, settings: updated });
-      showToast('Pengaturan profil sekolah berhasil disimpan!');
-    } catch {
-      showToast('Gagal menyimpan profil sekolah.', 'error');
+      showToast('Profil sekolah dan data kepala sekolah berhasil disimpan!');
+    } catch (err) {
+      showToast((err as Error).message || 'Gagal menyimpan profil sekolah.', 'error');
     } finally {
       setIsSavingSettings(false);
     }
@@ -2719,6 +2725,26 @@ export const SaaSDashboard: React.FC<SaaSDashboardProps> = ({
                         onChange={(e) => setSchoolSettings({ ...schoolSettings, principalNip: e.target.value })}
                         className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Foto Kepala Sekolah (URL / Jalur Gambar)</label>
+                      <div className="flex items-center gap-3">
+                        {schoolSettings.principalPhoto && (
+                          <img
+                            src={schoolSettings.principalPhoto}
+                            alt="Foto Kepala Sekolah"
+                            className="w-10 h-12 object-cover rounded border border-slate-200 shadow-2xs"
+                            onError={(e) => (e.currentTarget.style.display = 'none')}
+                          />
+                        )}
+                        <input
+                          type="text"
+                          value={schoolSettings.principalPhoto || ''}
+                          onChange={(e) => setSchoolSettings({ ...schoolSettings, principalPhoto: e.target.value })}
+                          placeholder="/src/assets/images/headmaster_sman1julok_1793290495217.jpg"
+                          className="flex-1 px-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div>
