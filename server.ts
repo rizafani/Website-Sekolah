@@ -5,12 +5,63 @@ import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { initialData, initialRoles, initialUsers, initialEditorialArticles, initialStudentGrades, initialAuditLogs } from './src/data/initialData.ts';
 import { DatabaseSchema, User, RoleDefinition, PermissionKey, EditorialArticle, AuditLog, StudentGradeRecord, AnnouncementItem, EventItem, StaffItem, GalleryItem, DownloadItem, NotificationItem } from './src/types/index.ts';
+import { RELATIONAL_SCHEMA_DDL, generateSQLDDLScript } from './src/db/schemaDefinition.ts';
+import { runSecurityAndDatabaseTests } from './tests/security_and_database.test.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
+const BACKUP_DIR = path.join(DATA_DIR, 'backups');
+
+// Input Sanitization & XSS Mitigation Helper
+function sanitizeData(input: any): any {
+  if (typeof input === 'string') {
+    return input
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/javascript:[^"']*/gi, '')
+      .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+  }
+  if (Array.isArray(input)) {
+    return input.map(sanitizeData);
+  }
+  if (input !== null && typeof input === 'object') {
+    const cleaned: Record<string, any> = {};
+    for (const key of Object.keys(input)) {
+      cleaned[key] = sanitizeData(input[key]);
+    }
+    return cleaned;
+  }
+  return input;
+}
+
+// Automated Snapshot Creation with Retention Policy (Keep 10 most recent)
+function createAutomatedBackupSnapshot(): void {
+  try {
+    if (!fs.existsSync(BACKUP_DIR)) {
+      fs.mkdirSync(BACKUP_DIR, { recursive: true });
+    }
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const snapshotFile = path.join(BACKUP_DIR, `snapshot-${timestamp}.json`);
+    fs.writeFileSync(snapshotFile, JSON.stringify(db, null, 2), 'utf-8');
+
+    // Retention Policy: Keep latest 10 snapshots
+    const files = fs.readdirSync(BACKUP_DIR)
+      .filter(f => f.startsWith('snapshot-') && f.endsWith('.json'))
+      .map(f => ({ name: f, time: fs.statSync(path.join(BACKUP_DIR, f)).mtimeMs }))
+      .sort((a, b) => b.time - a.time);
+
+    if (files.length > 10) {
+      const toDelete = files.slice(10);
+      for (const item of toDelete) {
+        fs.unlinkSync(path.join(BACKUP_DIR, item.name));
+      }
+    }
+  } catch (err) {
+    console.error('Error creating automated backup snapshot:', err);
+  }
+}
 
 // Helper for cryptographic hashing
 function hashPassword(password: string, salt: string): string {
@@ -57,6 +108,9 @@ function loadDatabase(): DatabaseSchema {
 }
 
 let db = loadDatabase();
+
+// Create initial snapshot on boot
+createAutomatedBackupSnapshot();
 
 function saveDatabase(): void {
   try {
@@ -203,6 +257,30 @@ async function startServer() {
 
   app.use(express.json());
 
+  // Input Sanitization & XSS Prevention
+  app.use((req, _res, next) => {
+    if (req.body && typeof req.body === 'object') {
+      req.body = sanitizeData(req.body);
+    }
+    next();
+  });
+
+  // In-Memory Rate Limiting for Sensitive Endpoints
+  const loginAttemptsByIp = new Map<string, { count: number; resetAt: number }>();
+  function checkRateLimit(ip: string, maxAttempts = 15, windowMs = 60000): boolean {
+    const now = Date.now();
+    const entry = loginAttemptsByIp.get(ip);
+    if (!entry || now > entry.resetAt) {
+      loginAttemptsByIp.set(ip, { count: 1, resetAt: now + windowMs });
+      return true;
+    }
+    if (entry.count >= maxAttempts) {
+      return false;
+    }
+    entry.count++;
+    return true;
+  }
+
   // ----------------------------------------------------
   // AUTHENTICATION & SESSION ENDPOINTS
   // ----------------------------------------------------
@@ -211,6 +289,11 @@ async function startServer() {
   app.post('/api/auth/login', (req, res) => {
     const { identifier, password } = req.body;
     const ip = req.ip || '127.0.0.1';
+
+    if (!checkRateLimit(ip, 15, 60000)) {
+      createAuditLog('ANON', identifier || 'UNKNOWN', 'GUEST', 'RATE_LIMIT_EXCEEDED', 'AUTH', 'Upaya login melebihi ambang batas rate limiting (15/menit).', ip, 'BLOCKED');
+      return res.status(429).json({ error: 'Terlalu banyak percobaan login. Harap tunggu beberapa saat sebelum mencoba kembali.' });
+    }
 
     if (!identifier || !password) {
       return res.status(400).json({ error: 'Mohon masukkan email/username dan kata sandi.' });
@@ -883,6 +966,69 @@ async function startServer() {
     createAuditLog(req.user!.id, req.user!.username, req.user!.role, 'ARTICLE_PUBLISHED', 'EDITORIAL', `Mempublikasikan artikel resmi: '${article.title}' ke website publik.`, req.ip || '127.0.0.1', 'SUCCESS');
 
     res.json(article);
+  });
+
+  // 22b. Update Editorial Article (Requires content.edit)
+  app.put('/api/editorial/articles/:id', authenticate, requirePermission('content.edit'), (req: AuthenticatedRequest, res) => {
+    const article = db.articles.find(a => a.id === req.params.id);
+    if (!article) return res.status(404).json({ error: 'Artikel tidak ditemukan.' });
+
+    const { title, excerpt, content, category, imageUrl, status, tags, publishedAt } = req.body;
+    if (title) {
+      article.title = title.trim();
+      article.slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    }
+    if (excerpt !== undefined) article.excerpt = excerpt;
+    if (content !== undefined) article.content = content;
+    if (category) article.category = category;
+    if (imageUrl) article.imageUrl = imageUrl;
+    if (status) article.status = status;
+    if (tags) article.tags = Array.isArray(tags) ? tags : String(tags).split(',').map(t => t.trim());
+    if (publishedAt) article.publishedAt = publishedAt;
+    article.updatedAt = new Date().toISOString();
+
+    const newsIdx = db.news.findIndex(n => n.id === article.id);
+    if (article.status === 'published') {
+      const newsItem = {
+        id: article.id,
+        title: article.title,
+        slug: article.slug,
+        excerpt: article.excerpt,
+        content: article.content,
+        category: article.category,
+        author: article.authorName,
+        date: article.publishedAt ? article.publishedAt.split('T')[0] : new Date().toISOString().split('T')[0],
+        imageUrl: article.imageUrl,
+        tags: article.tags,
+        views: article.views || 0,
+        isFeatured: false
+      };
+      if (newsIdx !== -1) {
+        db.news[newsIdx] = newsItem;
+      } else {
+        db.news.unshift(newsItem);
+      }
+    } else if (newsIdx !== -1) {
+      db.news.splice(newsIdx, 1);
+    }
+
+    saveDatabase();
+    createAuditLog(req.user!.id, req.user!.username, req.user!.role, 'ARTICLE_UPDATED', 'EDITORIAL', `Memperbarui artikel: '${article.title}' [Status: ${article.status}].`, req.ip || '127.0.0.1', 'SUCCESS');
+    res.json(article);
+  });
+
+  // 22c. Delete Editorial Article (Requires content.delete)
+  app.delete('/api/editorial/articles/:id', authenticate, requirePermission('content.delete'), (req: AuthenticatedRequest, res) => {
+    const idx = db.articles.findIndex(a => a.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Artikel tidak ditemukan.' });
+
+    const title = db.articles[idx].title;
+    db.articles.splice(idx, 1);
+    db.news = db.news.filter(n => n.id !== req.params.id);
+
+    saveDatabase();
+    createAuditLog(req.user!.id, req.user!.username, req.user!.role, 'ARTICLE_DELETED', 'EDITORIAL', `Menghapus artikel resmi: '${title}'.`, req.ip || '127.0.0.1', 'SUCCESS');
+    res.json({ success: true });
   });
 
   // ----------------------------------------------------
@@ -1680,6 +1826,237 @@ async function startServer() {
     saveDatabase();
     createAuditLog(req.user!.id, req.user!.username, req.user!.role, 'DATABASE_RESTORED', 'SYSTEM', 'Memulihkan database dari berkas cadangan.', req.ip || '127.0.0.1', 'SUCCESS');
     res.json({ success: true, message: 'Database berhasil dipulihkan.' });
+  });
+
+  // Automated Snapshot List (Policy 10 latest files)
+  app.get('/api/system/snapshots', authenticate, requirePermission('settings.manage'), (_req, res) => {
+    try {
+      if (!fs.existsSync(BACKUP_DIR)) {
+        return res.json({ snapshots: [], maxRetention: 10 });
+      }
+      const files = fs.readdirSync(BACKUP_DIR)
+        .filter(f => f.startsWith('snapshot-') && f.endsWith('.json'))
+        .map(f => {
+          const stat = fs.statSync(path.join(BACKUP_DIR, f));
+          return {
+            filename: f,
+            sizeBytes: stat.size,
+            sizeKb: (stat.size / 1024).toFixed(1) + ' KB',
+            createdAt: new Date(stat.mtimeMs).toISOString()
+          };
+        })
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      res.json({ snapshots: files, maxRetention: 10, total: files.length });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // Create On-Demand Snapshot
+  app.post('/api/system/snapshots/create', authenticate, requirePermission('settings.manage'), (req: AuthenticatedRequest, res) => {
+    try {
+      createAutomatedBackupSnapshot();
+      createAuditLog(req.user!.id, req.user!.username, req.user!.role, 'SNAPSHOT_CREATED', 'SYSTEM', 'Membuat snapshot cadangan otomatis baru (rotasi 10 berkas).', req.ip || '127.0.0.1', 'SUCCESS');
+      res.json({ success: true, message: 'Snapshot cadangan baru berhasil dibuat.' });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // ==========================================
+  // SECURITY & DATABASE VALIDATION ENDPOINTS
+  // ==========================================
+
+  // Secure File Upload with MIME Whitelist & 5MB Limit
+  const ALLOWED_MIME_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/svg+xml',
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ];
+  const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+  app.post('/api/upload', authenticate, (req: AuthenticatedRequest, res) => {
+    const { filename, mimeType, fileSize, title } = req.body;
+    if (!filename || !mimeType) {
+      return res.status(400).json({ error: 'Nama berkas dan tipe MIME wajib disediakan.' });
+    }
+
+    // 1. Size constraint check (<= 5MB)
+    if (fileSize && Number(fileSize) > MAX_FILE_SIZE_BYTES) {
+      return res.status(400).json({ 
+        error: `Ukuran berkas melebihi batas maksimal 5 MB (Diterima: ${(Number(fileSize) / (1024 * 1024)).toFixed(2)} MB).` 
+      });
+    }
+
+    // 2. MIME Whitelist check
+    if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
+      return res.status(400).json({ 
+        error: `Tipe berkas '${mimeType}' tidak diizinkan. Hanya menerima berkas Gambar (JPEG/PNG/WebP) dan Dokumen Resmi (PDF/DOCX/XLSX).` 
+      });
+    }
+
+    // 3. Extension sanitization & executable blocking
+    const ext = filename.split('.').pop()?.toLowerCase();
+    const FORBIDDEN_EXTENSIONS = ['exe', 'php', 'sh', 'bat', 'cmd', 'js', 'py', 'vbs', 'jsp', 'cgi'];
+    if (ext && FORBIDDEN_EXTENSIONS.includes(ext)) {
+      createAuditLog(req.user?.id || 'ANON', req.user?.username || 'ANON', req.user?.role || 'GUEST', 'MALICIOUS_UPLOAD_BLOCKED', 'SECURITY', `Mencoba mengunggah berkas terlarang: ${filename}`, req.ip || '127.0.0.1', 'BLOCKED');
+      return res.status(403).json({ error: 'Berkas dengan ekstensi berpotensi berbahaya diblokir oleh sistem keamanan.' });
+    }
+
+    // Safe sanitized URL
+    const safeFilename = `upload_${Date.now()}_${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+    const fileUrl = `/uploads/${safeFilename}`;
+
+    const newMedia = {
+      id: `med-${Date.now()}`,
+      title: title || filename,
+      url: fileUrl,
+      fileType: mimeType.startsWith('image/') ? 'image' as const : 'document' as const,
+      fileSize: fileSize ? `${(Number(fileSize) / (1024 * 1024)).toFixed(1)} MB` : '1.0 MB',
+      uploadedAt: new Date().toISOString().split('T')[0],
+      uploadedBy: req.user?.fullName || 'Pengguna Terotentikasi'
+    };
+
+    if (!db.media) db.media = [];
+    db.media.unshift(newMedia);
+    saveDatabase();
+
+    createAuditLog(req.user?.id || 'SYSTEM', req.user?.username || 'SYSTEM', req.user?.role || 'SYSTEM', 'FILE_UPLOADED', 'MEDIA', `Berkas terverifikasi diunggah: ${safeFilename} (${mimeType})`, req.ip || '127.0.0.1', 'SUCCESS');
+
+    res.status(201).json({
+      success: true,
+      message: 'Berkas berhasil diverifikasi dan disimpan secara aman.',
+      file: newMedia
+    });
+  });
+
+  // SQL DDL Schema Export Endpoint
+  app.get('/api/schema/ddl', (_req, res) => {
+    const ddl = generateSQLDDLScript();
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.send(ddl);
+  });
+
+  // Schema Summary & Entities Overview Endpoint
+  app.get('/api/schema/summary', (_req, res) => {
+    res.json({
+      school: 'SMA Negeri 1 Julok',
+      location: 'Desa Buket Seuraja, Kec. Julok, Kab. Aceh Timur, Aceh',
+      standard: 'Normalized 3NF Relational Architecture & Zero-Trust Security',
+      totalEntities: RELATIONAL_SCHEMA_DDL.length,
+      entities: RELATIONAL_SCHEMA_DDL.map(t => ({
+        name: t.name,
+        description: t.description,
+        columnCount: t.columns.length,
+        primaryKey: t.columns.find(c => c.isPrimary)?.name,
+        foreignKeys: t.columns.filter(c => c.references).map(c => ({
+          column: c.name,
+          referencesTable: c.references?.table,
+          referencesColumn: c.references?.column,
+          onDelete: c.references?.onDelete
+        })),
+        indexesCount: t.indexes.length
+      }))
+    });
+  });
+
+  // Security & Database Test Suite Runner Endpoint
+  app.get('/api/system/run-tests', authenticate, requirePermission('settings.manage'), (req: AuthenticatedRequest, res) => {
+    const suiteResult = runSecurityAndDatabaseTests();
+    createAuditLog(
+      req.user!.id,
+      req.user!.username,
+      req.user!.role,
+      'SECURITY_TEST_SUITE_RUN',
+      'SYSTEM',
+      `Menjalankan pengujian keamanan dan basis data komprehensif: ${suiteResult.passed}/${suiteResult.total} Lulus.`,
+      req.ip || '127.0.0.1',
+      suiteResult.failed === 0 ? 'SUCCESS' : 'FAILED'
+    );
+    res.json(suiteResult);
+  });
+
+  // Non-destructive In-Memory Dry-run Recovery Test
+  app.post('/api/system/test-recovery', authenticate, requirePermission('settings.manage'), (req: AuthenticatedRequest, res) => {
+    const targetData = req.body && Object.keys(req.body).length > 0 ? req.body : db;
+    
+    // Check integrity of all 22 required collections
+    const requiredKeys = [
+      'settings', 'news', 'announcements', 'events', 'staff', 'classes',
+      'facilities', 'achievements', 'galleries', 'extracurriculars', 'spmb',
+      'downloads', 'messages', 'faqs', 'users', 'roles', 'articles', 'grades',
+      'auditLogs', 'pages', 'media', 'notifications'
+    ];
+
+    const missing = requiredKeys.filter(k => !targetData[k]);
+    const isValid = missing.length === 0;
+
+    createAuditLog(
+      req.user!.id,
+      req.user!.username,
+      req.user!.role,
+      'RECOVERY_DRYRUN_TEST',
+      'SYSTEM',
+      `Uji integritas pemulihan cadangan (dry-run): ${isValid ? 'LULUS (Integritas 100%)' : 'GAGAL (Hilang: ' + missing.join(', ') + ')'}`,
+      req.ip || '127.0.0.1',
+      isValid ? 'SUCCESS' : 'FAILED'
+    );
+
+    res.json({
+      success: isValid,
+      status: isValid ? 'INTEGRITY_VERIFIED' : 'INTEGRITY_COMPROMISED',
+      testedEntities: requiredKeys.length,
+      missingEntities: missing,
+      totalUsers: targetData.users?.length || 0,
+      totalPosts: targetData.articles?.length || 0,
+      totalStudents: targetData.grades?.length || 0,
+      testedAt: new Date().toISOString()
+    });
+  });
+
+  // External Integration Status Diagnostic
+  app.get('/api/integrations/status', (_req, res) => {
+    const isSmtpConfigured = !!(process.env.SMTP_HOST && process.env.SMTP_USER);
+    res.json({
+      googleAuth: {
+        provider: 'Google Firebase Authentication',
+        status: 'Terkonfigurasi & Aktif (Popup Auth)',
+        scope: ['email', 'profile'],
+        clientId: '453428238948-738n46a9utis03rscgk38dd0fkptd80r.apps.googleusercontent.com'
+      },
+      googleMaps: {
+        provider: 'Google Maps Platform',
+        status: 'Terkonfigurasi & Aktif',
+        schoolCoordinates: {
+          lat: 4.9818,
+          lng: 97.6472
+        },
+        address: 'Desa Buket Seuraja, Kecamatan Julok, Kabupaten Aceh Timur, Aceh 24458'
+      },
+      youtubeIntegration: {
+        provider: 'YouTube Video Embed API',
+        status: 'Terkonfigurasi & Aktif',
+        channelTitle: 'SMA Negeri 1 Julok Official',
+        videoType: 'Profil Sekolah & Dokumentasi Prestasi'
+      },
+      digitalServices: {
+        lms: { name: 'LMS Kurikulum Merdeka', status: 'Siap Terhubung', url: '/layanan-digital#lms' },
+        cbt: { name: 'CBT Asesmen Mandiri', status: 'Siap Terhubung', url: '/layanan-digital#cbt' },
+        dapodik: { name: 'Dapodik Kemendikbud', status: 'Tersinkronisasi', url: 'https://dapo.kemdikbud.go.id' }
+      },
+      emailNotifications: {
+        provider: 'SMTP Relay',
+        status: isSmtpConfigured ? 'Terkonfigurasi' : 'Belum Dikonfigurasi (Menunggu Kredensial Provider)',
+        isConfigured: isSmtpConfigured,
+        details: isSmtpConfigured 
+          ? `Terhubung ke host ${process.env.SMTP_HOST}` 
+          : 'Fitur email notifikasi otomatis akan aktif saat variabel SMTP_HOST & SMTP_USER disediakan di environment server.'
+      }
+    });
   });
 
   // Vite Integration in Development

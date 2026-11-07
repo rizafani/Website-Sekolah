@@ -418,6 +418,29 @@ export const api = {
     return data;
   },
 
+  async updateEditorialArticle(id: string, article: Partial<EditorialArticle>): Promise<EditorialArticle> {
+    const res = await fetch(`/api/editorial/articles/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(article)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal memperbarui artikel');
+    return data;
+  },
+
+  async deleteEditorialArticle(id: string): Promise<boolean> {
+    const res = await fetch(`/api/editorial/articles/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Gagal menghapus artikel');
+    }
+    return true;
+  },
+
   // ----------------------------------------------------
   // ACADEMIC & STUDENT GRADES (E-Rapor)
   // ----------------------------------------------------
@@ -1194,5 +1217,81 @@ export const api = {
       return true;
     }
     return false;
+  },
+
+  // ----------------------------------------------------
+  // SECURITY & DATABASE VALIDATION SUITE
+  // ----------------------------------------------------
+  async fetchSchemaDDL(): Promise<string> {
+    try {
+      const res = await fetch('/api/schema/ddl');
+      if (res.ok) return await res.text();
+    } catch {}
+    return '-- Relational 3NF Schema DDL for SMA Negeri 1 Julok\n-- Menghubungi server...';
+  },
+
+  async fetchSchemaSummary(): Promise<any> {
+    try {
+      const res = await fetch('/api/schema/summary');
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
+  },
+
+  async runSecurityTests(): Promise<any> {
+    try {
+      const res = await fetch('/api/system/run-tests', {
+        headers: getAuthHeaders()
+      });
+      if (res.ok) return await res.json();
+    } catch (e: any) {
+      return { error: e.message || 'Gagal menjalankan pengujian.' };
+    }
+    return { error: 'Gagal menjalankan pengujian keamanan (Periksa otentikasi).' };
+  },
+
+  async testRecoveryDryRun(dataPayload?: any): Promise<any> {
+    try {
+      const res = await fetch('/api/system/test-recovery', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(dataPayload || {})
+      });
+      if (res.ok) return await res.json();
+    } catch (e: any) {
+      return { error: e.message || 'Gagal menguji integritas pemulihan.' };
+    }
+    return { error: 'Gagal menjalankan pengujian pemulihan.' };
+  },
+
+  async fetchIntegrationsStatus(): Promise<any> {
+    try {
+      const res = await fetch('/api/integrations/status');
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
+  },
+
+  async fetchSnapshots(): Promise<any> {
+    try {
+      const res = await fetch('/api/system/snapshots', {
+        headers: getAuthHeaders()
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+    return { snapshots: [], maxRetention: 10 };
+  },
+
+  async createSnapshot(): Promise<any> {
+    try {
+      const res = await fetch('/api/system/snapshots/create', {
+        method: 'POST',
+        headers: getAuthHeaders()
+      });
+      if (res.ok) return await res.json();
+    } catch (e: any) {
+      return { error: e.message };
+    }
+    return { error: 'Gagal membuat snapshot.' };
   }
 };

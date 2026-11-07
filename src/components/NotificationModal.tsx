@@ -241,10 +241,19 @@ export const NotificationModal: React.FC<NotificationModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-slate-50 border-t border-slate-200 text-center">
+        <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2">
+          <button
+            onClick={() => {
+              onClose();
+              onNavigate('notifikasi');
+            }}
+            className="py-1.5 px-3 text-xs font-semibold text-sky-900 hover:text-sky-950 hover:bg-sky-100/60 rounded-lg cursor-pointer transition-colors"
+          >
+            Buka Halaman Notifikasi Lengkap &rarr;
+          </button>
           <button
             onClick={onClose}
-            className="w-full py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-200/60 rounded-lg cursor-pointer"
+            className="py-1.5 px-3 text-xs font-semibold text-slate-600 hover:bg-slate-200/60 rounded-lg cursor-pointer transition-colors"
           >
             Tutup
           </button>

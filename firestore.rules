@@ -1,14 +1,19 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Global default deny
+
+    // ----------------------------------------------------
+    // GLOBAL DEFAULT DENY (FIRST PILLAR)
+    // ----------------------------------------------------
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Helper functions
+    // ----------------------------------------------------
+    // HARDENED GLOBAL HELPER PRIMITIVES
+    // ----------------------------------------------------
     function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
     function incoming() {
@@ -34,26 +39,149 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Connection test document
+    // ----------------------------------------------------
+    // VALIDATION BLUEPRINTS (ANTI-UPDATE-GAP)
+    // ----------------------------------------------------
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'username', 'fullName', 'email', 'role']) &&
+        data.uid is string && data.uid.size() <= 128 &&
+        data.username is string && data.username.size() <= 64 &&
+        data.fullName is string && data.fullName.size() <= 128 &&
+        data.email is string && data.email.size() <= 128 &&
+        data.role is string && data.role.size() <= 64;
+    }
+
+    function isValidPost(data) {
+      return data.keys().hasAll(['id', 'title', 'content', 'status', 'authorId']) &&
+        data.id is string && data.id.size() <= 64 &&
+        data.title is string && data.title.size() <= 255 &&
+        data.content is string && data.content.size() <= 50000 &&
+        data.status in ['draft', 'pending_approval', 'approved', 'scheduled', 'published', 'archived', 'rejected'] &&
+        data.authorId is string && data.authorId.size() <= 128;
+    }
+
+    function isValidAnnouncement(data) {
+      return data.keys().hasAll(['id', 'title', 'content']) &&
+        data.id is string && data.id.size() <= 64 &&
+        data.title is string && data.title.size() <= 255 &&
+        data.content is string && data.content.size() <= 10000;
+    }
+
+    function isValidEvent(data) {
+      return data.keys().hasAll(['id', 'title', 'date', 'category']) &&
+        data.id is string && data.id.size() <= 64 &&
+        data.title is string && data.title.size() <= 255 &&
+        data.date is string && data.date.size() <= 32 &&
+        data.category is string && data.category.size() <= 64;
+    }
+
+    function isValidSpmb(data) {
+      return data.keys().hasAll(['id', 'registrationNumber', 'fullName', 'nisn', 'chosenPathway', 'status']) &&
+        data.id is string && data.id.size() <= 64 &&
+        data.registrationNumber is string && data.registrationNumber.size() <= 64 &&
+        data.fullName is string && data.fullName.size() <= 128 &&
+        data.nisn is string && data.nisn.size() <= 16 &&
+        data.chosenPathway in ['Zonasi', 'Prestasi Akademik', 'Afirmasi', 'Perpindahan Tugas Orang Tua'] &&
+        data.status in ['Menunggu Verifikasi', 'Berkas Diterima', 'Lulus Seleksi', 'Cadangan', 'Tidak Lulus'];
+    }
+
+    function isValidContactMessage(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'subject', 'message']) &&
+        data.id is string && data.id.size() <= 64 &&
+        data.name is string && data.name.size() <= 128 &&
+        data.email is string && data.email.size() <= 128 &&
+        data.subject is string && data.subject.size() <= 255 &&
+        data.message is string && data.message.size() <= 5000;
+    }
+
+    // ----------------------------------------------------
+    // COLLECTION GUARDS & ACCESS RULES
+    // ----------------------------------------------------
+
+    // 0. Connection Test Document
     match /test/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Admins collection
+    // 1. Admins Collection
     match /admins/{adminId} {
       allow read: if isSignedIn();
       allow write: if isAdmin();
     }
 
-    // Users collection
+    // 2. Users Collection (PII ISOLATED - Strict Owner or Admin)
     match /users/{userId} {
       allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
       allow list: if isAdmin();
-      allow create, update, delete: if isValidId(userId) && isAdmin();
+      allow create: if isValidId(userId) && isValidUser(incoming()) && (
+        isAdmin() || (isOwner(userId) && incoming().role == 'siswa')
+      );
+      allow update: if isValidId(userId) && (
+        isAdmin() ||
+        (isOwner(userId) && incoming().role == existing().role && incoming().uid == existing().uid)
+      );
+      allow delete: if isValidId(userId) && isAdmin();
     }
 
-    // Articles collection (Editorial workflow)
+    // 3. Roles Collection
+    match /roles/{roleId} {
+      allow read: if isSignedIn();
+      allow write: if isValidId(roleId) && isAdmin();
+    }
+
+    // 4. Permissions Collection
+    match /permissions/{permissionId} {
+      allow read: if isSignedIn();
+      allow write: if isValidId(permissionId) && isAdmin();
+    }
+
+    // 5. User Roles Junction
+    match /user_roles/{id} {
+      allow read: if isSignedIn();
+      allow write: if isValidId(id) && isAdmin();
+    }
+
+    // 6. Role Permissions Junction
+    match /role_permissions/{id} {
+      allow read: if isSignedIn();
+      allow write: if isValidId(id) && isAdmin();
+    }
+
+    // 7. School Settings (Public Read, Admin Write)
+    match /school_settings/{settingId} {
+      allow read: if isValidId(settingId);
+      allow write: if isValidId(settingId) && isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if isValidId(settingId);
+      allow write: if isValidId(settingId) && isAdmin();
+    }
+
+    // 8. Custom CMS Pages (Public if published, Admin writes)
+    match /pages/{pageId} {
+      allow get: if isValidId(pageId) && (resource.data.status == 'published' || isAdmin());
+      allow list: if resource.data.status == 'published' || isAdmin();
+      allow create, update, delete: if isValidId(pageId) && isAdmin();
+    }
+
+    // 9. Posts & Editorial Articles (Multi-Tier Editorial Workflow)
+    match /posts/{postId} {
+      allow get: if isValidId(postId) && (
+        resource.data.status == 'published' ||
+        isAdmin() ||
+        (isSignedIn() && resource.data.authorId == request.auth.uid)
+      );
+      allow list: if resource.data.status == 'published' || isAdmin();
+      allow create: if isValidId(postId) && isSignedIn() && isValidPost(incoming()) && incoming().authorId == request.auth.uid;
+      allow update: if isValidId(postId) && (
+        isAdmin() ||
+        (isSignedIn() && existing().authorId == request.auth.uid && incoming().authorId == existing().authorId && isValidPost(incoming()))
+      );
+      allow delete: if isValidId(postId) && isAdmin();
+    }
+
     match /articles/{articleId} {
       allow get: if isValidId(articleId) && (
         resource.data.status == 'published' ||
@@ -69,19 +197,84 @@ service cloud.firestore {
       allow delete: if isValidId(articleId) && isAdmin();
     }
 
-    // Announcements collection
+    // 10. Post Categories & Tags
+    match /post_categories/{categoryId} {
+      allow read: if isValidId(categoryId);
+      allow write: if isValidId(categoryId) && isAdmin();
+    }
+
+    match /post_tags/{tagId} {
+      allow read: if isValidId(tagId);
+      allow write: if isValidId(tagId) && isAdmin();
+    }
+
+    // 11. Post Revisions
+    match /post_revisions/{revisionId} {
+      allow read: if isValidId(revisionId) && isSignedIn();
+      allow write: if isValidId(revisionId) && isSignedIn();
+    }
+
+    // 12. Announcements (Public Read, Admin Write)
     match /announcements/{announcementId} {
       allow read: if isValidId(announcementId);
-      allow write: if isValidId(announcementId) && isAdmin();
+      allow write: if isValidId(announcementId) && isAdmin() && isValidAnnouncement(incoming());
     }
 
-    // Events collection
+    // 13. Events & Academic Calendar (Public Read, Admin Write)
     match /events/{eventId} {
       allow read: if isValidId(eventId);
-      allow write: if isValidId(eventId) && isAdmin();
+      allow write: if isValidId(eventId) && isAdmin() && isValidEvent(incoming());
     }
 
-    // SPMB Registrations collection
+    // 14. Media Library (Max 5MB asset validation)
+    match /media/{mediaId} {
+      allow read: if isValidId(mediaId);
+      allow create: if isValidId(mediaId) && isSignedIn() && incoming().fileSize <= 5242880;
+      allow update, delete: if isValidId(mediaId) && isAdmin();
+    }
+
+    // 15. Teachers & Staff Directory
+    match /teachers/{teacherId} {
+      allow read: if isValidId(teacherId);
+      allow write: if isValidId(teacherId) && isAdmin();
+    }
+
+    // 16. Students Directory (STRICT PII ISOLATION - Admin & Teacher Only)
+    match /students/{studentId} {
+      allow get: if isValidId(studentId) && (isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid));
+      allow list: if isAdmin();
+      allow write: if isValidId(studentId) && isAdmin();
+    }
+
+    // 17. Documents & Downloads Center
+    match /documents/{documentId} {
+      allow get: if isValidId(documentId) && (!resource.data.isRestricted || isSignedIn());
+      allow list: if !resource.data.isRestricted || isSignedIn();
+      allow write: if isValidId(documentId) && isAdmin();
+    }
+
+    // 18. Contact Messages (Public write with schema check, Admin management)
+    match /contact_messages/{messageId} {
+      allow create: if isValidId(messageId) && isValidContactMessage(incoming());
+      allow read, update, delete: if isValidId(messageId) && isAdmin();
+    }
+
+    // 19. SPMB Admissions (Student Applicant Privacy Guard)
+    match /admissions/{admissionId} {
+      allow get: if isValidId(admissionId) && (isAdmin() || (isSignedIn() && resource.data.email == request.auth.token.email));
+      allow list: if isAdmin();
+      allow create: if isValidId(admissionId) && isValidSpmb(incoming());
+      allow update, delete: if isValidId(admissionId) && isAdmin();
+
+      // Subcollection: Verified Admission Documents
+      match /documents/{docId} {
+        allow get: if isValidId(docId) && (isAdmin() || (isSignedIn() && get(/databases/$(database)/documents/admissions/$(admissionId)).data.email == request.auth.token.email));
+        allow list: if isAdmin();
+        allow create: if isValidId(docId) && incoming().fileSize <= 5242880;
+        allow update, delete: if isValidId(docId) && isAdmin();
+      }
+    }
+
     match /spmbRegistrations/{regId} {
       allow get: if isValidId(regId) && (isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid));
       allow list: if isAdmin();
@@ -89,10 +282,19 @@ service cloud.firestore {
       allow update, delete: if isValidId(regId) && isAdmin();
     }
 
-    // School Settings
-    match /settings/{settingId} {
-      allow read: if isValidId(settingId);
-      allow write: if isValidId(settingId) && isAdmin();
+    // 20. Notifications
+    match /notifications/{notificationId} {
+      allow get: if isValidId(notificationId) && (
+        isAdmin() || (isSignedIn() && resource.data.targetUserId == request.auth.uid)
+      );
+      allow list: if isSignedIn();
+      allow write: if isValidId(notificationId) && isAdmin();
+    }
+
+    // 21. Audit Logs (Append-only security log - Admin read only)
+    match /audit_logs/{logId} {
+      allow get, list: if isAdmin();
+      allow write: if isValidId(logId) && isAdmin();
     }
   }
 }

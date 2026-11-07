@@ -50,6 +50,10 @@ import { DownloadsView } from './views/DownloadsView.tsx';
 import { ContactView } from './views/ContactView.tsx';
 import { FaqView } from './views/FaqView.tsx';
 import { PrivacyTermsView } from './views/PrivacyTermsView.tsx';
+import { DigitalServicesView } from './views/DigitalServicesView.tsx';
+import { ProgramUnggulanView } from './views/ProgramUnggulanView.tsx';
+import { BeasiswaView } from './views/BeasiswaView.tsx';
+import { NotificationsPageView } from './views/NotificationsPageView.tsx';
 import { AdminDashboard } from './views/AdminDashboard.tsx';
 
 // Role-Based Dashboards
@@ -59,7 +63,7 @@ import { EditorDashboard } from './views/dashboards/EditorDashboard.tsx';
 import { GuruDashboard } from './views/dashboards/GuruDashboard.tsx';
 import { SiswaDashboard } from './views/dashboards/SiswaDashboard.tsx';
 import { OperatorTuDashboard } from './views/dashboards/OperatorTuDashboard.tsx';
-import { SaaSDashboard } from './views/SaaSDashboard.tsx';
+import { SaaSDashboard, DashboardMenuId } from './views/SaaSDashboard.tsx';
 
 import { KeyRound, ShieldAlert, ArrowRight, UserCheck, ShieldCheck, LayoutGrid } from 'lucide-react';
 
@@ -67,6 +71,7 @@ export default function App() {
   const [data, setData] = useState<DatabaseSchema>(initialData);
   const [currentView, setCurrentView] = useState<string>('beranda');
   const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
+  const [dashboardTab, setDashboardTab] = useState<DashboardMenuId>('ringkasan');
 
   // Modals
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -86,6 +91,92 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(() => getStoredUser());
   const [userPermissions, setUserPermissions] = useState<PermissionKey[]>(() => getStoredPermissions());
   const [dashboardLayout, setDashboardLayout] = useState<'saas' | 'role_specific'>('saas');
+
+  // Synchronize route with window.location.hash for individual page URL
+  const syncRouteFromHash = () => {
+    const rawHash = window.location.hash.replace(/^#\/?/, '').trim();
+    if (!rawHash || rawHash === 'beranda') {
+      setCurrentView('beranda');
+      return;
+    }
+
+    const segments = rawHash.split('/');
+    const mainRoute = segments[0] || 'beranda';
+    const subRoute = segments[1] || '';
+
+    if (mainRoute === 'dashboard') {
+      setCurrentView('dashboard');
+      if (subRoute) {
+        setDashboardTab(subRoute as DashboardMenuId);
+      }
+      return;
+    }
+
+    if (mainRoute === 'berita-detail' && subRoute) {
+      setSelectedNewsId(subRoute);
+      api.recordNewsView(subRoute);
+      setCurrentView('berita-detail');
+      return;
+    }
+
+    if (mainRoute === 'halaman' && subRoute) {
+      setSelectedPageSlug(subRoute);
+      setCurrentView('halaman-kustom');
+      return;
+    }
+
+    setCurrentView(mainRoute);
+  };
+
+  // Hash listener for browser Back / Forward buttons and direct URL visits
+  useEffect(() => {
+    syncRouteFromHash();
+    const handleHashChange = () => {
+      syncRouteFromHash();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Update dynamic document title on each individual page view
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      'beranda': 'Beranda Resmi',
+      'profil': 'Profil & Identitas Sekolah',
+      'sejarah': 'Sejarah Singkat Sekolah',
+      'visi-misi': 'Visi, Misi & Tujuan Institusi',
+      'sambutan': 'Sambutan Kepala Sekolah',
+      'organisasi': 'Struktur Organisasi & Komite',
+      'guru': 'Data Guru & Tenaga Kependidikan',
+      'kelas': 'Data Kelas & Rombongan Belajar',
+      'fasilitas': 'Sarana & Fasilitas Kampus',
+      'program-unggulan': 'Program Unggulan Sekolah',
+      'kurikulum': 'Kurikulum Merdeka & Projek P5',
+      'jadwal': 'Jadwal Pelajaran Rombel',
+      'materi-belajar': 'Bank Modul & Bahan Ajar',
+      'asesmen': 'Asesmen & Ujian CBT Mandiri',
+      'agenda': 'Kalender Akademik & Agenda',
+      'prestasi': 'Prestasi Siswa & Guru',
+      'ekstrakurikuler': 'Kegiatan Ekstrakurikuler',
+      'berita': 'Berita & Artikel Sekolah',
+      'berita-detail': 'Rincian Berita & Wawasan',
+      'pengumuman': 'Pengumuman Resmi Kedinasan',
+      'beasiswa': 'Informasi Beasiswa & Bantuan Siswa',
+      'galeri': 'Galeri Dokumentasi Foto & Video',
+      'unduhan': 'Pusat Unduhan Dokumen',
+      'layanan-digital': 'Portal Layanan Digital Terpadu',
+      'spmb': 'Penerimaan Siswa Baru (SPMB)',
+      'kontak': 'Kontak & Lokasi Buket Seuraja',
+      'faq': 'Tanya Jawab (FAQ)',
+      'privasi-ketentuan': 'Kebijakan Privasi & Ketentuan',
+      'notifikasi': 'Pusat Notifikasi & Siaran Resmi',
+      'dashboard': `Dasbor Manajemen (${dashboardTab.toUpperCase()})`
+    };
+
+    const currentTitle = titles[currentView] || 'Portal Sekolah';
+    document.title = `${currentTitle} - SMA Negeri 1 Julok`;
+  }, [currentView, dashboardTab]);
 
   // Check server session on load
   useEffect(() => {
@@ -122,9 +213,18 @@ export default function App() {
     if (view === 'berita-detail' && param) {
       setSelectedNewsId(param);
       api.recordNewsView(param);
-    }
-    if ((view === 'halaman-kustom' || view === 'program-unggulan' || view === 'beasiswa') && param) {
+      window.location.hash = `#/berita-detail/${param}`;
+    } else if (view === 'halaman-kustom' && param) {
       setSelectedPageSlug(param);
+      window.location.hash = `#/halaman/${param}`;
+    } else if (view === 'dashboard') {
+      const tab = (param as DashboardMenuId) || dashboardTab || 'ringkasan';
+      setDashboardTab(tab);
+      window.location.hash = `#/dashboard/${tab}`;
+    } else if (view === 'beranda') {
+      window.location.hash = '#/beranda';
+    } else {
+      window.location.hash = `#/${view}`;
     }
     setCurrentView(view);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -225,6 +325,11 @@ export default function App() {
           onRefresh={handleDataRefresh}
           onNavigate={handleNavigate}
           onLogout={handleLogout}
+          initialTab={dashboardTab}
+          onTabChange={(tab) => {
+            setDashboardTab(tab);
+            window.location.hash = `#/dashboard/${tab}`;
+          }}
         />
       );
     }
@@ -424,35 +529,30 @@ export default function App() {
           />
         );
 
-      case 'program-unggulan': {
-        const page = data.pages?.find((p) => p.slug === 'program-unggulan') || data.pages?.[0];
-        if (!page) {
-          return (
-            <HomeView
-              data={data}
-              onNavigate={handleNavigate}
-              onOpenLightbox={(item) => setLightboxItem(item)}
-              onOpenDigitalServices={() => setIsDigitalServicesOpen(true)}
-            />
-          );
-        }
-        return <CustomPageView page={page} onNavigate={handleNavigate} />;
-      }
+      case 'program-unggulan':
+        return <ProgramUnggulanView onNavigate={handleNavigate} />;
 
-      case 'beasiswa': {
-        const page = data.pages?.find((p) => p.slug === 'beasiswa-dan-bantuan') || data.pages?.[1] || data.pages?.[0];
-        if (!page) {
-          return (
-            <HomeView
-              data={data}
-              onNavigate={handleNavigate}
-              onOpenLightbox={(item) => setLightboxItem(item)}
-              onOpenDigitalServices={() => setIsDigitalServicesOpen(true)}
-            />
-          );
-        }
-        return <CustomPageView page={page} onNavigate={handleNavigate} />;
-      }
+      case 'beasiswa':
+        return <BeasiswaView onNavigate={handleNavigate} />;
+
+      case 'layanan-digital':
+        return (
+          <DigitalServicesView
+            onNavigate={handleNavigate}
+            onOpenLogin={() => setIsLoginOpen(true)}
+            isLoggedIn={!!currentUser}
+          />
+        );
+
+      case 'notifikasi':
+        return (
+          <NotificationsPageView
+            notifications={data.notifications || []}
+            onMarkRead={handleMarkNotificationRead}
+            onMarkAllRead={handleMarkAllNotificationsRead}
+            onNavigate={handleNavigate}
+          />
+        );
 
       case 'halaman-kustom': {
         const page = data.pages?.find((p) => p.slug === selectedPageSlug || p.id === selectedPageSlug) || data.pages?.[0];

@@ -63,7 +63,7 @@ export interface User {
   subject?: string;  // For teacher
 }
 
-export type EditorialStatus = 'draft' | 'pending_approval' | 'approved' | 'published' | 'rejected';
+export type EditorialStatus = 'draft' | 'pending_approval' | 'approved' | 'scheduled' | 'published' | 'archived' | 'rejected';
 
 export interface EditorialArticle {
   id: string;
@@ -375,6 +375,8 @@ export interface ContentTag {
   id: string;
   name: string;
   slug: string;
+  postId?: string;
+  tag?: string;
 }
 
 export interface MediaItem {

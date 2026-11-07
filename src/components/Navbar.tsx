@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="flex items-center gap-3 sm:gap-4 text-xs font-medium">
             <button
-              onClick={onOpenDigitalServices}
+              onClick={() => handleLinkClick('layanan-digital')}
               className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <Globe className="w-3.5 h-3.5" />
@@ -614,6 +614,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
               <button onClick={() => handleLinkClick('kontak')} className="w-full text-left pl-6 py-1.5 text-xs text-slate-700 hover:text-sky-900">
                 Kontak & Lokasi Buket Seuraja
+              </button>
+              <button onClick={() => handleLinkClick('layanan-digital')} className="w-full text-left pl-6 py-1.5 text-xs font-semibold text-amber-700 hover:text-amber-900 flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-amber-600" />
+                <span>Portal Layanan Digital Terpadu 🌐</span>
+              </button>
+              <button onClick={() => handleLinkClick('notifikasi')} className="w-full text-left pl-6 py-1.5 text-xs text-slate-700 hover:text-sky-900 flex items-center gap-1.5">
+                <Bell className="w-3.5 h-3.5 text-slate-500" />
+                <span>Pusat Notifikasi & Siaran Resmi</span>
               </button>
               <button onClick={() => handleLinkClick('faq')} className="w-full text-left pl-6 py-1.5 text-xs text-slate-700 hover:text-sky-900">
                 Tanya Jawab (FAQ)
